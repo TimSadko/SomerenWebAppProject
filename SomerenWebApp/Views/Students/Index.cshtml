@@ -1,0 +1,58 @@
+﻿@model List<Student>
+
+@{
+    ViewData["Title"] = "Students";
+}
+
+<style>
+    .VerticalBreak{
+        align-items: center;
+        width: 1px;
+        border-radius: 50%;
+        border-color: rgb(21, 21, 21);
+        border-width: 4px;
+        background-color: rgb(21, 21, 21);
+        margin-top: 2px;
+        margin-bottom: 2px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+<div class="text-center">
+    <h1 class="display-4">Users</h1>
+    <a href="/Users/Create">Create New User</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Student Number</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Telephone Number</th>
+                <th>Class</th>
+                <th>Voucher Count</th>
+                <th>Room Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (Student std in Model)
+                {
+                    <tr>
+                        <td>@std.StudentNum</td>
+                        <td>@std.FirstName</td>
+                        <td>@std.LastName</td>
+                        <td>@std.PhoneNum</td>
+                        <td>@std.Class</td>
+                        <td>@std.VoucherCount</td>
+                        <td>@std.RoomNum</td>
+                        <!--<td>
+                            <a href="/Student/Edit/std.StudentNum">Edit</a>
+                            <a class="VerticalBreak" href="/Student/Delete/std.StudentNum">Delete</a>
+                        </td>-->
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
