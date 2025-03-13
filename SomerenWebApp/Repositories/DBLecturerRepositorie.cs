@@ -41,10 +41,10 @@ namespace SomerenWebApp.Repositories
         {
             return new Lecturer()
             {
-                LecturerId = (int)reader["lecturer_id"],
+                LecturerId = (int)reader["id"],
                 FirstName = (string)reader["first_name"],
                 LastName = (string)reader["last_name"],
-                PhoneNumber = (string)reader["phone_number"],
+                PhoneNumber = (string)reader["telephone_num"],
                 Age = (int)reader["age"]
             };
         }

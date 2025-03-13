@@ -4,24 +4,9 @@
     ViewData["Title"] = "Lecturers";
 }
 
-<style>
-    .VerticalBreak {
-        align-items: center;
-        width: 1px;
-        border-radius: 50%;
-        border-color: rgb(21, 21, 21);
-        border-width: 4px;
-        background-color: rgb(21, 21, 21);
-        margin-top: 2px;
-        margin-bottom: 2px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-</style>
-
 <div class="text-center">
-    <h1 class="display-4">Users</h1>
-    <a href="/Users/Create">Create New User</a>
+    <h1 class="display-4">Lecturers:</h1>
+    <a href="/Lecturers/Create">Create New Lecturer</a>
     <table>
         <thead>
             <tr>
@@ -34,14 +19,14 @@
         </thead>
         <tbody>
             @{
-                foreach (Lecturer std in Model)
+                foreach (Lecturer lecturer in Model)
                 {
                     <tr>
-                        <td>@std.LecturerId</td>
-                        <td>@std.FirstName</td>
-                        <td>@std.LastName</td>
-                        <td>@std.PhoneNumber</td>
-                        <td>@std.Age</td>
+                        <td>@lecturer.LecturerId</td>
+                        <td>@lecturer.FirstName</td>
+                        <td>@lecturer.LastName</td>
+                        <td>@lecturer.PhoneNumber</td>
+                        <td>@lecturer.Age</td>
                         <!--<td>
                             <a href="/Student/Edit/std.StudentNum">Edit</a>
                             <a class="VerticalBreak" href="/Student/Delete/std.StudentNum">Delete</a>
