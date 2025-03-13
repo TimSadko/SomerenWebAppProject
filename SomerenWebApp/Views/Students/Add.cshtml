@@ -1,0 +1,48 @@
+﻿@model SomerenWebApp.Models.Student
+
+@{
+	ViewData["Title"] = "Create Student";
+}
+
+<h4>Add New Student</h4>
+
+<form action="/Students/Add" method="post">
+	<div class="form-group py-2">
+		<label for="StudentNum">Student Number:</label>
+		<input type="number" id="StudentNum" name="StudentNum" class="form-control" required value="@Model?.StudentNum" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="FirstName">First Name:</label>
+		<input type="text" id="FirstName" name="FirstName" class="form-control" required value="@Model?.FirstName" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="LastName">Last Name:</label>
+		<input type="text" id="LastName" name="LastName" class="form-control" required value="@Model?.LastName" />
+	</div>	
+
+	<div class="form-group py-2">
+		<label for="PhoneNum">Telephone Number:</label>
+		<input type="tel" id="PhoneNum" name="PhoneNum" class="form-control" required value="@Model?.PhoneNum" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="Class">Class:</label>
+		<input type="text" id="Class" name="Class" class="form-control" required value="@Model?.Class" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="VoucherCount">Voucher Count:</label>
+		<input type="number" id="VoucherCount" name="VoucherCount" class="form-control" required value="@Model?.VoucherCount" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="RoomNum">Room Number:</label>
+		<input type="number" id="RoomNum" name="RoomNum" class="form-control" required value="@Model?.RoomNum" />
+	</div>
+
+	<button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+<a href="/Students/Index">Back to List</a>

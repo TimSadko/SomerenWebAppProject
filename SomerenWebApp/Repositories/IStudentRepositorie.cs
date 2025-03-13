@@ -5,9 +5,9 @@ namespace SomerenWebApp.Repositories
     public interface IStudentRepositorie
     {
         List<Student> GetAll();
-        Student? GetById(int id);
+        Student? GetByNum(int student_number);
         void Add(Student std);
         void Edit(Student std);
-        void Delete(int id);
+        void Delete(int student_number);
     }
 }
