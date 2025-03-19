@@ -37,7 +37,7 @@ namespace SomerenWebApp.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"!{ex.Message}");
+                Console.WriteLine($"!!! {ex.Message}");
                 return View(room);
             }
         }
@@ -65,6 +65,7 @@ namespace SomerenWebApp.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"!!! {ex.Message}");
                 return View(room);
             }
         }
@@ -82,16 +83,17 @@ namespace SomerenWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(int room_number)
+        public IActionResult Delete(Room room)
         {
             try
             {
-                _roomsRepository.Delete(room_number);
+                _roomsRepository.Delete(room.RoomNumber);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                return View(room_number);
+                Console.WriteLine($"!!! {ex.Message}");
+                return View(room);
             }
         }
 
