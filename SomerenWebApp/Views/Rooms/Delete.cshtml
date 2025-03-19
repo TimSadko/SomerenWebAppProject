@@ -1,0 +1,19 @@
+﻿@model SomerenWebApp.Models.Room
+@{
+    ViewData["Title"] = "Delete Room";
+}
+
+<h1>Delete Room:</h1>
+<form action="/Rooms/Delete" method="POST">
+    <div class="form-group py-2">
+        <input hidden type="number" name="RoomNumber" value="@Model?.RoomNumber" />
+    </div>
+    <p>Are you sure you want to delete this room?</p>
+	
+    <p>Room number: @Model.RoomNumber</p>
+    <p>Building: @Model.Building</p>
+
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+<br />
+<a href="/Rooms/Index" class="btn btn-primary">Back to List</a>
