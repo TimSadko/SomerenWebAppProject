@@ -7,22 +7,11 @@
 <div class="controller_body">
     <div class="text-center">
         <h1 class="display-4">Rooms</h1>
-        <p>Number of rooms: @Model.Count</p>
+        <a href="/Rooms/Add">Create New Room</a>
+        <p>Number of rooms: @Model.Count</p>       
     </div>
 
     <div class="search-add-table-center">
-
-        <form action="/Rooms/Index" method="get">
-            <div style="display:flex">
-                <input class="input-styling" type="search" name="RoomNumber" placeholder="Filter room by number (e.g., 101, 2 beds)" />
-                <button type="submit" class="my-btn btn-primary btn-border-none">Search</button>
-            </div>
-        </form>
-
-        <br />
-        <a href="/Rooms/Add" class="btn btn-primary">Add Room</a>
-        <br />
-
         <table class="table_pretty2">
             <thead>
                 <tr class="main_tr">

@@ -11,7 +11,7 @@ namespace SomerenWebApp
 			// Connect all repositories objects
 			builder.Services.AddSingleton<IStudentRepositorie, DBStudentRepositorie>();
 			builder.Services.AddSingleton<ILecturerRepositorie, DBLecturerRepositorie>();
-            builder.Services.AddSingleton<IRoomRepository, DBRoomsRepository>();
+            builder.Services.AddSingleton<IRoomRepository, DBRoomRepository>();
 
 			// Add services to the container.          
 			builder.Services.AddControllersWithViews();
