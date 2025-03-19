@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <Compile Remove="Views\Room\**" />
+    <Content Remove="Views\Room\**" />
+    <EmbeddedResource Remove="Views\Room\**" />
+    <None Remove="Views\Room\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Room\" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
 </Project>
