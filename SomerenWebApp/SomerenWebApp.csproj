@@ -15,4 +15,8 @@
     <Folder Include="Views\Room\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\css\styles.css" />
+  </ItemGroup>
+
 </Project>
