@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using SomerenWebApp.Models;
-using System.Diagnostics;
 
 namespace SomerenWebApp.Controllers
 {
@@ -21,12 +20,6 @@ namespace SomerenWebApp.Controllers
         public IActionResult Privacy()
         {
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
