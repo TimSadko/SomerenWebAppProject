@@ -1,0 +1,22 @@
+﻿@model SomerenWebApp.Models.Activity
+
+@{
+	ViewData["Title"] = "Delete Activity";
+}
+
+<h4>Delete Activity</h4>
+
+<form action="/Activities
+/Delete" method="post">
+	<input hidden type="text" name="ActivityId" value="@Model?.ActivityId" />
+
+	<a>Are you sure you want to delete Activity:</a>
+
+	<div class="form-group py-2">
+		<a>@Model?.ActivityName</a>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Delete</button>
+</form>
+
+<a href="/Users/Index">Back to List</a>
