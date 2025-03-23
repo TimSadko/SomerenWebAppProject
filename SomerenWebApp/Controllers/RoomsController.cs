@@ -4,21 +4,21 @@ using SomerenWebApp.Repositories;
 
 namespace SomerenWebApp.Controllers
 {
-    public class LecturersController : Controller
-    {
-        private ILecturerRepositorie _rep;
+	public class RoomsController : Controller
+	{
 
-        public LecturersController(ILecturerRepositorie rep)
+        private readonly IRoomRepository _roomsRepository;
+
+        public RoomsController(IRoomRepository roomsRepository)
         {
-            _rep = rep;
+            _roomsRepository = roomsRepository;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            var lecturers = _rep.GetAll();
-
-            return View(lecturers);
+            var rooms = _roomsRepository.GetAll();
+            return View(rooms);
         }
 
         [HttpGet]
@@ -28,47 +28,45 @@ namespace SomerenWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Lecturer lec)
+        public IActionResult Add(Room room)
         {
             try
             {
-                _rep.Add(lec);
-
+                _roomsRepository.Add(room);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
-                return View(lec);
+                return View(room);
             }
         }
 
-        [HttpGet]
         public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            Console.WriteLine(_rep.GetById((int)id));
-            return View(_rep.GetById((int)id));
+            else
+            {
+                Room? room = _roomsRepository.GetByNum((int)id);
+                return View(room);
+            }
         }
 
         [HttpPost]
-        public IActionResult Edit(Lecturer lec)
+        public IActionResult Edit(Room room)
         {
             try
             {
-                Console.WriteLine(lec);
-                _rep.Edit(lec);
-
+                _roomsRepository.Edit(room);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
-                return View(lec);
+                return View(room);
             }
         }
 
@@ -80,23 +78,24 @@ namespace SomerenWebApp.Controllers
                 return NotFound();
             }
 
-            return View(_rep.GetById((int)id));
+            Room? room = _roomsRepository.GetByNum((int)id);
+            return View(room);
         }
 
         [HttpPost]
-        public IActionResult Delete(Lecturer lec)
+        public IActionResult Delete(Room room)
         {
             try
             {
-                _rep.Delete(lec.LecturerId);
-
+                _roomsRepository.Delete(room.RoomNumber);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
-                return View(lec);
+                return View(room);
             }
         }
+
     }
 }

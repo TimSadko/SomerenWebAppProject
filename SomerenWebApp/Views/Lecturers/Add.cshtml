@@ -1,0 +1,38 @@
+﻿@model SomerenWebApp.Models.Lecturer
+
+@{
+	ViewData["Title"] = "Add Lectuer";
+}
+
+<h4>Add New Lectuer</h4>
+
+<form action="/Lecturers/Add" method="post">
+	<div class="form-group py-2">
+		<label for="FirstName">First Name:</label>
+		<input type="text" id="FirstName" name="FirstName" class="form-control" required value="@Model?.FirstName" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="LastName">Last Name:</label>
+		<input type="text" id="LastName" name="LastName" class="form-control" required value="@Model?.LastName" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="PhoneNumber">Telephone Number:</label>
+		<input type="tel" id="PhoneNumber" name="PhoneNumber" class="form-control" required value="@Model?.PhoneNumber" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="Age">Age:</label>
+		<input type="number" id="Age" name="Age" class="form-control" required value="@Model?.Age" />
+	</div>
+	
+	<div class="form-group py-2">
+		<label for="RoomNumber">Room Number:</label>
+		<input type="number" id="RoomNumber" name="RoomNumber" class="form-control" required value="@Model?.RoomNumber" />
+	</div>
+
+	<button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+<a href="/Lecturers/Index">Back to List</a>

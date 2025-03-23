@@ -1,68 +1,116 @@
 ﻿using Microsoft.Data.SqlClient;
 using SomerenWebApp.Models;
+using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 
 namespace SomerenWebApp.Repositories
 {
-	public class DBRoomRepository : IRoomRepository
-	{
-		private readonly string? _connection_string;
+    public class DBRoomRepository : IRoomRepository
+    {
+        private readonly string? _connectionString;
 
-		public DBRoomRepository(IConfiguration config)
-		{
-			_connection_string = config.GetConnectionString("MessengerDatabase");
-		}
+        public DBRoomRepository(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("MessengerDatabase");
+        }
 
-		public List<Room> GetAll()
-		{
-			throw new NotImplementedException();
-		}
+        public List<Room> GetAll()
+        {
+            List<Room> rooms = new List<Room>();
 
-		private Room ReadRoom(SqlDataReader reader)
-		{
-			return new Room((int)reader["room_number"], (string)reader["building"]);
-		}
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT room_number, building FROM Rooms ORDER BY room_number";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Room room = MapRoom(reader);
+                        rooms.Add(room);
+                    }
+                }
 
-		public Room? GetByNum(int room_number)
-		{
-			using (SqlConnection con = new SqlConnection(_connection_string))
-			{
-				string query = "SELECT room_number, building From Rooms WHERE room_number = @room_number";
+            }
 
-				SqlCommand com = new SqlCommand(query, con);
-				com.Parameters.AddWithValue("@room_number", room_number);
+            return rooms;
+        }
 
-				com.Connection.Open();
-				SqlDataReader reader = com.ExecuteReader();
+        private Room MapRoom(SqlDataReader reader)
+        {
+            int room_number = (int)reader["room_number"];
+            string building = (string)reader["building"];
 
-				if (!reader.HasRows)
-				{
-					reader.Close(); return null;
-				}
-				else
-				{
-					reader.Read();
-					Room r = ReadRoom(reader);
+            return new Room(room_number, building);
+        }
 
-					reader.Close();
+        public void Add(Room room)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = "INSERT INTO Rooms (room_number,building) VALUES ( @room_number, @building)";
 
-					return r;
-				}
-			}
-		}
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@room_number", room.RoomNumber);
+                    cmd.Parameters.AddWithValue("@building", room.Building);
 
-		public void Add(Room rm)
-		{
-			throw new NotImplementedException();
-		}
+                    conn.Open();
+                    cmd.ExecuteNonQuery();                  
+                }
+            }
+        }
 
-		public void Edit(Room rm)
-		{
-			throw new NotImplementedException();
-		}
+        public Room? GetByNum(int room_number)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT room_number, building FROM Rooms WHERE room_number = @RoomNumber";
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@RoomNumber", room_number);
 
-		public void Delete(int room_number)
-		{
-			throw new NotImplementedException();
-		}	
-	}
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return MapRoom(reader);
+                    }
+                }
+
+            }
+            return null; // Return null if no room is found
+        }
+
+        public void Edit(Room room)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string query = "UPDATE Rooms SET building = @building WHERE room_number = @room_number";
+                SqlCommand command = new SqlCommand(query, conn);
+
+                command.Parameters.AddWithValue("@room_number", room.RoomNumber);
+                command.Parameters.AddWithValue("@building", room.Building);
+
+                conn.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+        public void Delete(int room_number)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "DELETE FROM Rooms WHERE room_number = @room_number";
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@room_number", room_number);
+
+                connection.Open();
+                int affect = command.ExecuteNonQuery();
+
+                if (affect == 0) throw new Exception("No record found!");
+            }
+        }
+    }
 }
