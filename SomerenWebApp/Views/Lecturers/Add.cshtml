@@ -4,14 +4,9 @@
 	ViewData["Title"] = "Add Lectuer";
 }
 
-<h4>Add New Student</h4>
+<h4>Add New Lectuer</h4>
 
-<form action="/Lectures/Add" method="post">
-	<div class="form-group py-2">
-		<label for="LecturerId">Lecturer Id:</label>
-		<input type="number" id="LecturerId" name="LecturerId" class="form-control" required value="@Model?.LecturerId" />
-	</div>
-
+<form action="/Lecturers/Add" method="post">
 	<div class="form-group py-2">
 		<label for="FirstName">First Name:</label>
 		<input type="text" id="FirstName" name="FirstName" class="form-control" required value="@Model?.FirstName" />
@@ -31,7 +26,6 @@
 		<label for="Age">Age:</label>
 		<input type="number" id="Age" name="Age" class="form-control" required value="@Model?.Age" />
 	</div>
-
 	
 	<div class="form-group py-2">
 		<label for="RoomNumber">Room Number:</label>

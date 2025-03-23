@@ -14,14 +14,19 @@
         {
         }
 
-        public Lecturer(int LecturerId, string FirstName, string LastName, string PhoneNumber, int Age, int roomNumber)
+        public Lecturer(int LecturerId, string FirstName, string LastName, string PhoneNumber, int Age, int RoomNumber)
         {
             this.LecturerId = LecturerId;
             this.FirstName = FirstName;
             this.LastName = LastName;
             this.PhoneNumber = PhoneNumber;
             this.Age = Age;
-            RoomNumber = roomNumber;
+            this.RoomNumber = RoomNumber;
         }
-    }
+
+		public override string? ToString()
+		{
+			return $"LecturerId: {LecturerId}; FirstName: {FirstName}; LastName: {LastName}; PhoneNumber: {PhoneNumber}; Age: {Age}; RoomNumber: {RoomNumber};";
+		}
+	}
 }

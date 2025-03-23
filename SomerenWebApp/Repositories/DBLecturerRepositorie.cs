@@ -51,14 +51,10 @@ namespace SomerenWebApp.Repositories
         }
 
         public Lecturer? GetById(int lecturerId)
-        { 
-          
-        
+        {               
             using (SqlConnection con = new SqlConnection(_connection_string))
             {
-                string query = "SELECT id," +
-                    " first_name," +
-                    " last_name, telephone_num, age, room_number From Lecturers WHERE id = @LecturerId";
+                string query = "SELECT id, first_name, last_name, telephone_num, age, room_number From Lecturers WHERE id = @LecturerId";
 
                 SqlCommand com = new SqlCommand(query, con);
                 com.Parameters.AddWithValue("@LecturerId", lecturerId);
@@ -85,40 +81,55 @@ namespace SomerenWebApp.Repositories
 
         public void Add(Lecturer lec)
         {
-            if (GetRoomByNum(lec.RoomNumber) == null)
+            if (GetRoomByNum(lec.RoomNumber) == null) throw new Exception($"Failed to add Lecturer: room with number: {lec.RoomNumber} was not found!");
+
+			using (SqlConnection con = new SqlConnection(_connection_string))
             {
-                throw new Exception($"Failed to add Lecturer: room with number: {lec.RoomNumber} was not found!");
-            }
-            if (GetById(lec.LecturerId) == null) // Check if lecturer alredy exsists in database
-            {
-                using (SqlConnection con = new SqlConnection(_connection_string))
-                {
-                    string query = "INSERT INTO Lecturer (first_name, first_name, last_name, telephone_num, room_number)" +
-                    " VALUES (@LecturerId, @FirstName, @LastName, @TelephoneNum, @RoomNumber)";
+                string query = "INSERT INTO Lecturers (first_name, last_name, telephone_num, age, room_number) VALUES (@FirstName, @LastName, @PhoneNumber, @Age, @RoomNumber); SELECT SCOPE_IDENTITY();";
 
-                    SqlCommand com = new SqlCommand(query, con);
+                SqlCommand com = new SqlCommand(query, con);
 
-                    com.Parameters.AddWithValue("@LecturerId", lec.LecturerId);
-                    com.Parameters.AddWithValue("@FirstName", lec.FirstName);
-                    com.Parameters.AddWithValue("@LastName", lec.LastName);
-                    com.Parameters.AddWithValue("@TelephoneNum", lec.PhoneNumber);
-                    com.Parameters.AddWithValue("@RoomNumber", lec.RoomNumber);
+                com.Parameters.AddWithValue("@FirstName", lec.FirstName);
+                com.Parameters.AddWithValue("@LastName", lec.LastName);
+                com.Parameters.AddWithValue("@PhoneNumber", lec.PhoneNumber);
+                com.Parameters.AddWithValue("@Age", lec.Age);
+                com.Parameters.AddWithValue("@RoomNumber", lec.RoomNumber);
 
-                    com.Connection.Open();
-                    com.ExecuteNonQuery();
-                }
-            }
-            else throw new Exception($"Student with student_number({lec.LecturerId}) already exists; Failed to add student");
+                com.Connection.Open();
 
+				lec.LecturerId = Convert.ToInt32(com.ExecuteScalar());
+			}         
         }
 
+		public void Edit(Lecturer lec)
+		{
+            Console.WriteLine(lec);
 
+			using (SqlConnection con = new SqlConnection(_connection_string))
+			{
+                string query = "UPDATE Lecturers SET first_name = @FirstName, last_name = @LastName, telephone_num = @PhoneNumber, age = @Age, room_number = @RoomNumber WHERE id = @LecturerId";
 
-        public void Delete(int lectureeId)
+				SqlCommand com = new SqlCommand(query, con);
+
+				com.Parameters.AddWithValue("@LecturerId", lec.LecturerId);
+				com.Parameters.AddWithValue("@FirstName", lec.FirstName);
+				com.Parameters.AddWithValue("@LastName", lec.LastName);
+				com.Parameters.AddWithValue("@PhoneNumber", lec.PhoneNumber);
+				com.Parameters.AddWithValue("@Age", lec.Age);
+				com.Parameters.AddWithValue("@RoomNumber", lec.RoomNumber);
+
+				com.Connection.Open();
+				int affect = com.ExecuteNonQuery();
+
+				if (affect == 0) throw new Exception("No record found!");
+			}
+		}
+
+		public void Delete(int lectureeId)
         {
             using (SqlConnection con = new SqlConnection(_connection_string))
             {
-                string query = "DELETE FROM Lecturers WHERE id = @student_number";
+                string query = "DELETE FROM Lecturers WHERE id = @id";
 
                 SqlCommand com = new SqlCommand(query, con);
 
@@ -130,36 +141,7 @@ namespace SomerenWebApp.Repositories
                 if (affect == 0) throw new Exception("No record found!");
             }
         }
-            
-        
-
-        public void Edit(Lecturer lec)
-        {
-
-            if (GetRoomByNum(lec.RoomNumber) == null)
-            {
-                throw new Exception($"Failed to edit Lecturer: room with number: {lec.RoomNumber} was not found!");
-            }
-
-            using (SqlConnection con = new SqlConnection(_connection_string))
-            {
-                string query = "INSERT INTO Lecturer (first_name, first_name, last_name, telephone_num, room_number)" +
-                                    " VALUES (@LecturerId, @FirstName, @LastName, @TelephoneNum, @RoomNumber)";
-
-                SqlCommand com = new SqlCommand(query, con);
-
-                com.Parameters.AddWithValue("@LecturerId", lec.LecturerId);
-                com.Parameters.AddWithValue("@FirstName", lec.FirstName);
-                com.Parameters.AddWithValue("@LastName", lec.LastName);
-                com.Parameters.AddWithValue("@TelephoneNum", lec.PhoneNumber);
-                com.Parameters.AddWithValue("@RoomNumber", lec.RoomNumber);
-
-                com.Connection.Open();
-                int affect = com.ExecuteNonQuery();
-
-                if (affect == 0) throw new Exception("No record found!");
-            }
-        }
+                     
         private Room? GetRoomByNum(int room_number)
         {
             Room ReadRoom(SqlDataReader reader)
