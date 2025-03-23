@@ -1,3 +1,4 @@
+using SomerenWebApp.Controllers;
 using SomerenWebApp.Repositories;
 
 namespace SomerenWebApp
@@ -8,11 +9,24 @@ namespace SomerenWebApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-			// Connect all repositories objects
-			builder.Services.AddSingleton<IStudentRepositorie, DBStudentRepositorie>();
-			builder.Services.AddSingleton<ILecturerRepositorie, DBLecturerRepositorie>();
-      builder.Services.AddSingleton<IRoomRepository, DBRoomRepository>();   
-      builder.Services.AddSingleton<IActivityRepository, DBActivityRepository>();
+            DefaultConfiguration def = new DefaultConfiguration(builder.Configuration.GetConnectionString("MessengerDatabase"));
+
+            // Connect all repositories objects
+            var _student_rep = new DBStudentRepositorie(def);
+			builder.Services.AddSingleton<IStudentRepositorie>(_student_rep);
+            CommonController._student_rep = _student_rep;
+
+			var _lecturer_rep = new DBLecturerRepositorie(def);
+			builder.Services.AddSingleton<ILecturerRepositorie>(_lecturer_rep);
+            CommonController._lecturer_rep = _lecturer_rep;
+
+			var _room_rep = new DBRoomRepository(def);
+			builder.Services.AddSingleton<IRoomRepository>(_room_rep);
+            CommonController._room_rep = _room_rep;
+
+			var _activity_rep = new DBActivityRepository(def);
+			builder.Services.AddSingleton<IActivityRepository>(_activity_rep);
+            CommonController._activity_rep = _activity_rep;
 
 			// Add services to the container.          
 			builder.Services.AddControllersWithViews();

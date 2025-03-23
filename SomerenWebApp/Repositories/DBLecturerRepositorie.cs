@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using SomerenWebApp.Controllers;
 using SomerenWebApp.Models;
 
 namespace SomerenWebApp.Repositories
@@ -7,9 +8,9 @@ namespace SomerenWebApp.Repositories
     {
         private readonly string? _connection_string;
 
-        public DBLecturerRepositorie(IConfiguration config)
+        public DBLecturerRepositorie(DefaultConfiguration config)
         {
-            _connection_string = config.GetConnectionString("MessengerDatabase");
+            _connection_string = config.GetConnectionString();
         }
 
         public List<Lecturer> GetAll()
@@ -18,7 +19,7 @@ namespace SomerenWebApp.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT id, first_name, last_name, telephone_num, age, room_number From Lecturers";
+                string query = "SELECT id, first_name, last_name, telephone_num, age, room_number From Lecturers ORDER BY last_name";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -81,7 +82,7 @@ namespace SomerenWebApp.Repositories
 
         public void Add(Lecturer lec)
         {
-            if (GetRoomByNum(lec.RoomNumber) == null) throw new Exception($"Failed to add Lecturer: room with number: {lec.RoomNumber} was not found!");
+            if (CommonController._room_rep.GetByNum(lec.RoomNumber) == null) throw new Exception($"Failed to add Lecturer: room with number: {lec.RoomNumber} was not found!");
 
 			using (SqlConnection con = new SqlConnection(_connection_string))
             {
@@ -103,7 +104,7 @@ namespace SomerenWebApp.Repositories
 
 		public void Edit(Lecturer lec)
 		{
-            Console.WriteLine(lec);
+			if (CommonController._room_rep.GetByNum(lec.RoomNumber) == null) throw new Exception($"Failed to edit Student: room with number: {lec.RoomNumber} was not found!");
 
 			using (SqlConnection con = new SqlConnection(_connection_string))
 			{
@@ -140,39 +141,6 @@ namespace SomerenWebApp.Repositories
 
                 if (affect == 0) throw new Exception("No record found!");
             }
-        }
-                     
-        private Room? GetRoomByNum(int room_number)
-        {
-            Room ReadRoom(SqlDataReader reader)
-            {
-                return new Room((int)reader["room_number"], (string)reader["building"]);
-            }
-
-            using (SqlConnection con = new SqlConnection(_connection_string))
-            {
-                string query = "SELECT room_number, building From Rooms WHERE room_number = @room_number";
-
-                SqlCommand com = new SqlCommand(query, con);
-                com.Parameters.AddWithValue("@room_number", room_number);
-
-                com.Connection.Open();
-                SqlDataReader reader = com.ExecuteReader();
-
-                if (!reader.HasRows)
-                {
-                    reader.Close(); return null;
-                }
-                else
-                {
-                    reader.Read();
-                    Room r = ReadRoom(reader);
-
-                    reader.Close();
-
-                    return r;
-                }
-            }
-        }
+        }                   
     }
 }

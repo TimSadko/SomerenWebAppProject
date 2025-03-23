@@ -10,9 +10,9 @@ namespace SomerenWebApp.Repositories
     {
         private readonly string? _connectionString;
 
-        public DBRoomRepository(IConfiguration configuration)
+        public DBRoomRepository(DefaultConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("MessengerDatabase");
+            _connectionString = configuration.GetConnectionString();
         }
 
         public List<Room> GetAll()
@@ -38,7 +38,53 @@ namespace SomerenWebApp.Repositories
             return rooms;
         }
 
-        private Room MapRoom(SqlDataReader reader)
+		public List<Room> GetAllAvalibleForStudents()
+		{
+			List<Room> rooms = new List<Room>();
+
+			using (SqlConnection conn = new SqlConnection(_connectionString))
+			{
+				string query = "SELECT room_number, building FROM Rooms WHERE room_number NOT IN (SELECT room_number FROM Lecturers) AND room_number NOT IN (SELECT room_number FROM Students GROUP BY room_number HAVING COUNT(*) > 7) ORDER BY room_number";
+				SqlCommand cmd = new SqlCommand(query, conn);
+				conn.Open();
+				using (SqlDataReader reader = cmd.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						Room room = MapRoom(reader);
+						rooms.Add(room);
+					}
+				}
+
+			}
+
+			return rooms;
+		}
+
+		public List<Room> GetAllAvalibleForLecturers()
+		{
+			List<Room> rooms = new List<Room>();
+
+			using (SqlConnection conn = new SqlConnection(_connectionString))
+			{
+				string query = "SELECT room_number, building FROM Rooms WHERE room_number NOT IN (SELECT room_number FROM Lecturers) AND room_number NOT IN (SELECT room_number FROM Students) ORDER BY room_number";
+				SqlCommand cmd = new SqlCommand(query, conn);
+				conn.Open();
+				using (SqlDataReader reader = cmd.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						Room room = MapRoom(reader);
+						rooms.Add(room);
+					}
+				}
+
+			}
+
+			return rooms;
+		}
+
+		private Room MapRoom(SqlDataReader reader)
         {
             int room_number = (int)reader["room_number"];
             string building = (string)reader["building"];

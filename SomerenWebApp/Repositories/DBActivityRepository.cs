@@ -8,9 +8,9 @@ namespace SomerenWebApp.Repositories
     {
         private readonly string? _connection_string;
 
-        public DBActivityRepository(IConfiguration config)
+        public DBActivityRepository(DefaultConfiguration config)
         {
-            _connection_string = config.GetConnectionString("MessengerDatabase");
+            _connection_string = config.GetConnectionString();
         }
         public List<Activity> GetAll()
         {

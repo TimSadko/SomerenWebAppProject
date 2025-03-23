@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Data.SqlClient;
+using SomerenWebApp.Controllers;
 using SomerenWebApp.Models;
 
 namespace SomerenWebApp.Repositories
@@ -8,9 +9,9 @@ namespace SomerenWebApp.Repositories
     {
         private readonly string? _connection_string;
 
-        public DBStudentRepositorie(IConfiguration config)
+        public DBStudentRepositorie(DefaultConfiguration config)
         {
-            _connection_string = config.GetConnectionString("MessengerDatabase");
+            _connection_string = config.GetConnectionString();
         }
 
         public List<Student> GetAll()
@@ -73,7 +74,7 @@ namespace SomerenWebApp.Repositories
 
         public void Add(Student std)
         {
-			if (GetRoomByNum(std.RoomNum) == null) {
+			if (CommonController._room_rep.GetByNum(std.RoomNum) == null) {
 				throw new Exception($"Failed to add Student: room with number: {std.RoomNum} was not found!");
 			}
 			//Console.WriteLine(std);
@@ -103,7 +104,7 @@ namespace SomerenWebApp.Repositories
 
         public void Edit(Student std)
         {
-			if (GetRoomByNum(std.RoomNum) == null)
+			if (CommonController._room_rep.GetByNum(std.RoomNum) == null)
 			{
 				throw new Exception($"Failed to edit Student: room with number: {std.RoomNum} was not found!");
 			}
@@ -143,39 +144,6 @@ namespace SomerenWebApp.Repositories
 				int affect = com.ExecuteNonQuery();
 
 				if (affect == 0) throw new Exception("No record found!");
-			}
-		}
-
-		private Room? GetRoomByNum(int room_number)
-		{
-			Room ReadRoom(SqlDataReader reader)
-			{
-				return new Room((int)reader["room_number"], (string)reader["building"]);
-			}
-
-			using (SqlConnection con = new SqlConnection(_connection_string))
-			{
-				string query = "SELECT room_number, building From Rooms WHERE room_number = @room_number";
-
-				SqlCommand com = new SqlCommand(query, con);
-				com.Parameters.AddWithValue("@room_number", room_number);
-
-				com.Connection.Open();
-				SqlDataReader reader = com.ExecuteReader();
-
-				if (!reader.HasRows)
-				{
-					reader.Close(); return null;
-				}
-				else
-				{
-					reader.Read();
-					Room r = ReadRoom(reader);
-
-					reader.Close();
-
-					return r;
-				}
 			}
 		}
 	}

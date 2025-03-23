@@ -51,7 +51,6 @@ namespace SomerenWebApp.Controllers
                 return NotFound();
             }
 
-            Console.WriteLine(_rep.GetById((int)id));
             return View(_rep.GetById((int)id));
         }
 
@@ -60,7 +59,6 @@ namespace SomerenWebApp.Controllers
         {
             try
             {
-                Console.WriteLine(lec);
                 _rep.Edit(lec);
 
                 return RedirectToAction("Index");
