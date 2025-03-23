@@ -88,7 +88,6 @@ namespace SomerenWebApp.Repositories
                     
 
                     com.Connection.Open();
-                    //com.ExecuteNonQuery();
 
                     act.ActivityId = Convert.ToInt32(com.ExecuteScalar());
                 }

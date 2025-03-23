@@ -4,7 +4,7 @@
 	ViewData["Title"] = "Delete Lecturer";
 }
 
-<h4>Delete User</h4>
+<h4>Delete Lecturer</h4>
 
 <form action="/Lecturers/Delete" method="post">
 	<input hidden type="number" name="LecturerId" value="@Model?.LecturerId" />
@@ -15,7 +15,7 @@
 		<a>@Model?.FullName</a>
 	</div>
 
-	<button type="submit" class="btn btn-primary">Delete</button>
+	<button type="submit" class="btn btn-danger">Delete</button>
 </form>
 
 <a href="/Lectures/Index">Back to List</a>
