@@ -28,8 +28,12 @@ namespace SomerenWebApp
 			builder.Services.AddSingleton<IActivityRepository>(_activity_rep);
             CommonController._activity_rep = _activity_rep;
 
-			// Add services to the container.          
-			builder.Services.AddControllersWithViews();
+            var _supervisor_rep = new DBSupervisorReposiory(def);
+            builder.Services.AddSingleton<ISupervisorReposiory>(_supervisor_rep);
+            CommonController._supervisor_rep = _supervisor_rep;
+
+            // Add services to the container.          
+            builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 

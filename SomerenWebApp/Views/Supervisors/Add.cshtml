@@ -1,0 +1,39 @@
+﻿@model SomerenWebApp.Models.Supervisor
+
+@{
+	ViewData["Title"] = "Add Supervisor";
+}
+
+<h4>Add New Supervisor</h4>
+
+<form action="/Supervisors/Add" method="post">
+	<div class="form-group py-2">
+		<label for="LecturerId">Lecturer:</label>
+		<select id="LecturerId" name="LecturerId" asp-for="LecturerId" required>
+			<option value="" disabled selected>Please select one</option>
+			@{
+				foreach (Lecturer lec in SomerenWebApp.Controllers.CommonController._lecturer_rep.GetAll())
+				{
+					<option value="@lec.LecturerId">@lec.FullName</option>
+				}
+			}
+		</select>
+	</div>
+
+	<div class="form-group py-2">
+		<label for="ActivityId">Activity:</label>
+		<select id="ActivityId" name="ActivityId" asp-for="ActivityId" required>
+			<option value="" disabled selected>Please select one</option>
+			@{
+				foreach (Activity act in SomerenWebApp.Controllers.CommonController._activity_rep.GetAll())
+				{
+					<option value="@act.ActivityId">@act.ActivityName (@act.Date)</option>
+				}
+			}
+		</select>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+<a href="/Supervisors/Index">Back to List</a>

@@ -1,0 +1,38 @@
+﻿@model List<Supervisor>
+
+@{
+    ViewData["Title"] = "Supervisors";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Supervisors</h1>
+    <a href="/Supervisors/Add">Add New Supervisor</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Lecturer Id</th>
+                <th>Activity Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (Supervisor spv in Model)
+                {
+                    var lec = SomerenWebApp.Controllers.CommonController._lecturer_rep.GetById(spv.LecturerId);
+                    var act = SomerenWebApp.Controllers.CommonController._activity_rep.GetById(spv.ActivityId);
+
+                    <tr>
+                        <td>@spv.Id</td>
+                        <td>@lec.FullName <strong>[@spv.LecturerId]</strong></td>
+                        <td>@act.ActivityName (@act.Date) <strong>[@spv.ActivityId]</strong></td>
+                        <td>
+                            <a href="/Supervisors/Edit/@spv.Id">Edit</a> |
+                            <a href="/Supervisors/Delete/@spv.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
