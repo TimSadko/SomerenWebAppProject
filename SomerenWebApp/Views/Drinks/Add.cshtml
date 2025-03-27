@@ -1,0 +1,29 @@
+﻿@model SomerenWebApp.Models.Drink
+
+
+@{
+    ViewData["Title"] = "AddDrink";
+}
+
+<div class="controller_body">
+    <form action="/Drinks/Add" method="POST">
+        <article class="input_group">
+            <label for="Name">Drink Name</label>
+            <input type="text" class="input_field" asp-for="Name" required />
+        </article>
+        <article class="input_group">
+            <label for="Alcoholic">Alcoholic </label>
+            <input type="bool" class="input_field" asp-for="Alcoholic" required />
+        </article>
+        <article class="input_group">
+            <label for="Price">Price</label>
+            <input type="number" class="input_field" asp-for="Price" required />
+        </article>
+
+        <button type="submit" class="add_entity_main">Add Drink</button>
+
+
+    </form>
+
+</div>
+

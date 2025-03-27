@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Drinks";
+}
+
+@model List<SomerenWebApp.Models.Drink>
+
+<div class="controller_body">
+    <div class="text-center">
+        <h1 class="display-4">Drinks</h1>
+        <p>Number of drinks: @Model.Count</p>
+    </div>
+
+    <div class="search-add-table-center">
+
+        <form action="/Drinks/Index" method="get">
+            <div style="display:flex">
+                <input class="input-styling" type="search" name="DrinkName" placeholder="Filter by name (e.g., Cola)" />
+                <button type="submit" class="my-btn btn-primary btn-border-none">Search</button>
+            </div>
+        </form>
+
+        <br />
+        <a href="/Drinks/Add" class="btn btn-primary">Add Drink</a>
+        <br />
+
+        <table class="table_pretty2">
+            <thead>
+                <tr class="main_tr">
+                    <th>Drink Name</th>
+                    <th>Alcoholic</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (Drink drink in Model)
+                {
+                    <tr>
+                        <td>@drink.Name</td>
+                        <td>@(drink.Alcoholic ? "Yes" : "No")</td>
+                        <td>€ @drink.Price</td>
+                        <td>
+                            <a href="/Drinks/Edit/@drink.Name"id="Name">Edit</a> |
+                            <a href="/Drinks/Delete/@drink.Name" onclick="return confirm('Are you sure you want to delete this drink?');">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

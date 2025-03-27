@@ -1,0 +1,23 @@
+﻿@model SomerenWebApp.Models.Drink
+
+@{
+	ViewData["Title"] = "EditDrink";
+}
+
+<div class="controller_body">
+	<form action="/Drinks/Edit" method="POST">
+		<input type="text" name="Name"  value="@Model?.Name" />
+		<article class="input_group">
+			<label for="Name">Drink Name</label>
+			<input type="text" class="input_field" name="Name" required value="@Model?.Name" />
+		</article>
+		<article class="input_group">
+			<label for="Alcoholic">Alcoholic </label>
+			<input type="bool" class="input_field" name="Alcoholic" required value="@Model?.Alcoholic" />
+		</article>
+		<article class="input_group">
+			<label for="Price">Price</label>
+			<input type="number" class="input_field" name="Price" required value="@Model?.Price" />
+		</article>
+		<button type="submit" class="add_entity_main">Edit Drink</button>
+	</form>
