@@ -2,9 +2,6 @@
 using SomerenWebApp.Models;
 using SomerenWebApp.Repositories;
 using System.Collections.Generic;
-using SomerenWebApp.Models;
-using SomerenWebApp.Repositories;
-
 
 namespace SomerenWebApp.Controllers
 {
@@ -15,17 +12,19 @@ namespace SomerenWebApp.Controllers
         {
             _drinksRepository = drinksRepository;
         }
+
         public IActionResult Index()
         {
             var drinks = _drinksRepository.GetAllDrinks();
             return View(drinks);
         }
+
         [HttpGet]
         public IActionResult Add()
         {
-
             return View();
         }
+
         [HttpPost]
         public IActionResult Add(Drink drink)
         {
@@ -40,10 +39,13 @@ namespace SomerenWebApp.Controllers
                 return View(drink);
             }
         }
+
         [HttpGet]
+        [Route("/Drinks/Edit/{name}")]
         public IActionResult Edit(string name)
         {
             var drink = _drinksRepository.GetDrinkByName(name);
+
             if (drink == null)
             {
                 Console.WriteLine($"Error: No drink found with ID: {name}");
@@ -51,6 +53,7 @@ namespace SomerenWebApp.Controllers
             }
             return View(drink);
         }
+
         [HttpPost]
         public IActionResult Edit(Drink drink)
         {
@@ -65,16 +68,17 @@ namespace SomerenWebApp.Controllers
                 return View(drink);
             }
         }
-        [HttpGet]
 
+        [HttpGet]
+        [Route("/Drinks/Delete/{name}")]
         public IActionResult Delete(string name)
         {
-            Console.WriteLine($"~~{name}~~");
-
+            //Console.WriteLine($"~~{name}~~");
             Drink drink = _drinksRepository.GetDrinkByName(name);        
 
             return View(drink);
         }
+
         [HttpPost]
         public IActionResult Delete(Drink drink)
         {

@@ -16,21 +16,19 @@ namespace SomerenWebApp.Repositories
 
         public void Add(Drink drink)
         {
-            if (drink != null)
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                string query = "INSERT INTO Drinks (name, alcoholic, price) VALUES (@Name, @Alcoholic, @Price)";
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    string query = "INSERT INTO Drinks (name, alcoholic, price) VALUES (@Name, @Alcoholic, @Price)";
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@Name", drink.Name);
-                        command.Parameters.AddWithValue("@Alcoholic", drink.Alcoholic);
-                        command.Parameters.AddWithValue("@Price", drink.Price);
-                        command.ExecuteNonQuery();
-                    }
+                    command.Parameters.AddWithValue("@Name", drink.Name);
+                    command.Parameters.AddWithValue("@Alcoholic", drink.Alcoholic);
+                    command.Parameters.AddWithValue("@Price", drink.Price);
+                    command.ExecuteNonQuery();
                 }
-            }
+            }           
         }
 
         public void Delete(Drink drink)

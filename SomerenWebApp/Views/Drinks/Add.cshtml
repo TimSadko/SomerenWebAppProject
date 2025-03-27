@@ -13,17 +13,14 @@
         </article>
         <article class="input_group">
             <label for="Alcoholic">Alcoholic </label>
-            <input type="bool" class="input_field" asp-for="Alcoholic" required />
+            <input type="checkbox" asp-for="Alcoholic" />
         </article>
         <article class="input_group">
             <label for="Price">Price</label>
-            <input type="number" class="input_field" asp-for="Price" required />
+            <input type="number" step="0.01" class="input_field" asp-for="Price" required />
         </article>
 
         <button type="submit" class="add_entity_main">Add Drink</button>
-
-
     </form>
-
 </div>
 

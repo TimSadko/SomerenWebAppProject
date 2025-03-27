@@ -20,7 +20,7 @@
         <dd class="col-sm-10">@Model.Price</dd>
     </dl>
 
-    <form asp-action="/Drinks/Delete" method="post">
+    <form action="/Drinks/Delete" method="post">
         <input type="hidden" name="Name" value="@Model.Name" />
 
         <button type="submit" class="btn btn-danger">Delete</button>
