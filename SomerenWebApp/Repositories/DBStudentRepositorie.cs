@@ -39,6 +39,38 @@ namespace SomerenWebApp.Repositories
             return students;
         }
 
+        public List<Student>? GetStudentsStayingInRoom(int room_number)
+        {          
+            using (SqlConnection conn = new SqlConnection(_connection_string))
+            {
+                string query = "SELECT student_number, first_name, last_name, telephone_num, class, voucher_count, room_number From Students WHERE room_number = @room_number ORDER BY last_name";
+                SqlCommand com = new SqlCommand(query, conn);
+
+				com.Parameters.AddWithValue("@room_number", room_number);
+
+                com.Connection.Open();
+                SqlDataReader reader = com.ExecuteReader();
+
+				if (!reader.HasRows) 
+				{
+					reader.Close();
+					return null;
+				}
+
+                List<Student> students = new List<Student>();
+                Student std;
+
+                while (reader.Read())
+                {
+                    std = ReadUser(reader);
+                    students.Add(std);
+                }
+                reader.Close();
+
+                return students;
+            }           
+        }
+
         private Student ReadUser(SqlDataReader reader)
         {
             return new Student((int)reader["student_number"], (string)reader["first_name"], (string)reader["last_name"], (string)reader["telephone_num"], (string)reader["class"], (int)reader["voucher_count"], (int)reader["room_number"]);
@@ -146,5 +178,30 @@ namespace SomerenWebApp.Repositories
 				if (affect == 0) throw new Exception("No record found!");
 			}
 		}
-	}
+
+        public void UpdateRoomNumber(AddGuestModel add_model)
+        {
+            Student? std = GetByNum(add_model.GuestId);
+
+            if (std == null)
+            {
+                throw new Exception($"Failed to edit room, Student: room with number: {std.RoomNum} was not found!");
+            }
+
+            using (SqlConnection con = new SqlConnection(_connection_string))
+            {
+                string query = "UPDATE Students SET room_number=@room_number WHERE student_number = @student_number";
+
+                SqlCommand com = new SqlCommand(query, con);
+
+                com.Parameters.AddWithValue("@student_number", std.StudentNum);
+                com.Parameters.AddWithValue("@room_number", add_model.RoomNumber);
+
+                com.Connection.Open();
+                int affect = com.ExecuteNonQuery();
+
+                if (affect == 0) throw new Exception("No record found!");
+            }
+        }
+    }
 }

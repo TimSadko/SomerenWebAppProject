@@ -1,16 +1,152 @@
-﻿@{
+﻿@model SomerenWebApp.Models.Room
+
+@{
     ViewData["Title"] = "Edit Room";
+
+    Lecturer? lec = null;
+    List<Student>? students = null;
+
+    if (Model.SingleRoom)
+    {
+        lec = SomerenWebApp.Controllers.CommonController._lecturer_rep.GetLecturerStayingInRoom(Model.RoomNumber);
+    }
+    else
+    {
+        students = SomerenWebApp.Controllers.CommonController._student_rep.GetStudentsStayingInRoom(Model.RoomNumber);
+    }
 }
+
+<link rel="stylesheet" href="~/SomerenWebApp.styles.css" asp-append-version="true" />
 
 <h1>Edit Room:</h1>
 <form action="/Rooms/Edit" method="POST">
-    <input hidden type="number" name="RoomNumber" value="@Model?.RoomNumber" />
+    <input hidden type="number" name="RoomNumber" value="@Model?.RoomNumber"/>
+
     <div class="form-group py-2">
         <label for="Building">Building:</label>
-        <input type="text" id="Building" name="Building" class="form-control" required value="@Model?.Building" />
+        <input type="text" id="Building" name="Building" class="form-control" required value="@Model?.Building"/>
     </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
+    <div class="form-group py-2">
+        <label for="SingleRoom">Room Type:</label>      
+        @{
+            if (Model.SingleRoom)
+            {
+                if (lec == null)
+                {
+                    <select id="SingleRoom" name="SingleRoom" asp-for="SingleRoom" required>
+                        <option value="@true" selected>Single Room</option>
+                        <option value="@false">Student Dormitory</option>
+                    </select>                 
+                }
+                else
+                {
+                    <select id="SingleRoom" name="SingleRoom" asp-for="SingleRoom" required>
+                        <option value="@true" selected>Single Room</option>
+                        <option value="@false" disabled>Student Dormitory</option>
+                    </select>
+
+                    <div class="RedTextAlarm">Changing room type is NOT alowed when there are guest in the room, clear the room first!</div>
+                }
+            }
+            else
+            {
+                if (students == null)
+                {
+                    <select id="SingleRoom" name="SingleRoom" asp-for="SingleRoom" required>
+                        <option value="@true">Single Room</option>
+                        <option value="@false" selected>Student Dormitory</option>
+                    </select>
+                }
+                else
+                {
+                    <select id="SingleRoom" name="SingleRoom" asp-for="SingleRoom" required>
+                        <option value="@true" disabled>Single Room</option>
+                        <option value="@false" selected>Student Dormitory</option>
+                    </select>
+
+                    <div class="RedTextAlarm">Changing room type is NOT alowed when there are guest in the room, clear the room first!</div>
+                }
+            }
+        }        
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Edit</button>
 </form>
+
+<br />
+
+<h4>Guests:</h4>
+<div class="form-group py-2">
+    <table>
+        <thead>
+            <tr class="main_tr">
+                <th>Students:</th>
+                <th>Actions:</th>
+            </tr>
+        </thead>
+
+        <tbody>        
+            @{
+                if (Model.SingleRoom)
+                {
+                    if (lec != null) // Lecurer guest
+                    {
+                        <tr>
+                            <td>
+                                <div class="StudentEditRoomText">@lec.FullName (Lecturer)</div>
+                            </td>
+                            <td><a href="/Rooms/RemoveGuest/@Model.RoomNumber/@lec.LecturerId">Remove</a></td>
+                        </tr>
+                    }
+                    else // Empty room
+                    {
+                        <tr>
+                            <td>
+                                <div class="StudentEditRoomText"> *Empty*</div>
+                            </td>
+                            <td><a href="/Rooms/AddGuest/@Model.RoomNumber">Add Guest</a></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    if (students != null) // Students guest
+                    {
+                        for (int i = 0; i < students.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="StudentEditRoomText">@students[i].FullName (@students[i].StudentNum)</div>
+                                </td>
+                                <td>
+                                    <a href="/Rooms/RemoveGuest/@Model.RoomNumber/@students[i].StudentNum">Remove</a>
+                                </td>
+                            </tr>
+                        }
+
+                        if (students.Count < 8)
+                        {
+                            <tr>
+                                <td>
+                                    <a class="StudentEditRoomLink" href="/Rooms/AddGuest/@Model.RoomNumber">*Add Student*</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else // Empty room
+                    {
+                        <tr>
+                            <td>
+                                <div class="StudentEditRoomText"> *Empty*</div>
+                            </td>
+                            <td><a href="/Rooms/AddGuest/@Model.RoomNumber">Add Guest</a></td>
+                        </tr>
+                    }
+                }
+            }        
+        </tbody>       
+    </table>
+</div>
 <br />
 <a href="/Rooms/Index" class="btn btn-primary">Back to List</a>

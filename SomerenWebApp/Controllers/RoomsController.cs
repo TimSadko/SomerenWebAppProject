@@ -97,5 +97,27 @@ namespace SomerenWebApp.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult AddGuest(int room_number)
+        {
+            Room r = _roomsRepository.GetByNum(room_number);
+
+            return View(new AddGuestModel(room_number, r.SingleRoom, 0));
+        }
+
+        [HttpPost]
+        public IActionResult AddGuest(AddGuestModel add_model)
+        {
+            try
+            {
+                _roomsRepository.AddGuest(add_model);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"!!! {ex.Message}");
+                return View(add_model);
+            }
+        }
     }
 }

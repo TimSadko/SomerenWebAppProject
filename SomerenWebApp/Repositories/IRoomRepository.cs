@@ -11,5 +11,6 @@ namespace SomerenWebApp.Repositories
         void Add(Room rm);
         void Edit(Room rm);
         void Delete(int room_number);
+        void AddGuest(AddGuestModel add_model);
     }
 }

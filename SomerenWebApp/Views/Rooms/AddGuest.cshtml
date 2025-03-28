@@ -1,0 +1,31 @@
+﻿@model SomerenWebApp.Models.AddGuestModel
+
+@{
+    ViewData["Title"] = "Add Room Guest";
+}
+
+<h1>Add Guest To Room:</h1>
+@{
+    if (Model.SingleRoom)
+    {
+        <form action="/Rooms/AddGuest" method="POST">
+            <div class="form-group py-2">
+                <label for="GuestId">Lecturer:</label>
+                <select id="GuestId" name="GuestId" asp-for="GuestId"  required>
+                    @{
+                        //var lec = SomSerenWebApp.Controllers.CommonController._lecturer_rep.GetAll
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Guest</button>
+        </form>
+    }
+    else
+    {
+        
+    }
+}
+<br />
+<a href="/Rooms/Index" class="btn btn-primary">Back to List</a>
+

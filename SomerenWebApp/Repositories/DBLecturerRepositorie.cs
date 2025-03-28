@@ -38,6 +38,31 @@ namespace SomerenWebApp.Repositories
             return lecturers;
         }
 
+        public List<Lecturer> GetAllWithoutRoom()
+        {
+            List<Lecturer> lecturers = new List<Lecturer>();
+
+            using (SqlConnection conn = new SqlConnection(_connection_string))
+            {
+                string query = "SELECT id, first_name, last_name, telephone_num, age, room_number From Lecturers ORDER BY last_name";
+                SqlCommand com = new SqlCommand(query, conn);
+
+                com.Connection.Open();
+                SqlDataReader reader = com.ExecuteReader();
+
+                Lecturer lec;
+
+                while (reader.Read())
+                {
+                    lec = ReadLecturer(reader);
+                    lecturers.Add(lec);
+                }
+                reader.Close();
+            }
+
+            return lecturers;
+        }
+
         private Lecturer ReadLecturer(SqlDataReader reader)
         {
             return new Lecturer()
@@ -78,7 +103,35 @@ namespace SomerenWebApp.Repositories
                 }
             }
         }
-        
+
+        public Lecturer? GetLecturerStayingInRoom(int room_number)
+        {
+            using (SqlConnection con = new SqlConnection(_connection_string))
+            {
+                string query = "SELECT id, first_name, last_name, telephone_num, age, room_number From Lecturers WHERE room_number = @room_number";
+
+                SqlCommand com = new SqlCommand(query, con);
+                com.Parameters.AddWithValue("@room_number", room_number);
+
+                com.Connection.Open();
+                SqlDataReader reader = com.ExecuteReader();
+
+                if (!reader.HasRows)
+                {
+                    reader.Close(); return null;
+                }
+                else
+                {
+                    reader.Read();
+                    Lecturer l = ReadLecturer(reader);
+
+                    reader.Close();
+
+                    return l;
+                }
+            }
+        }
+
 
         public void Add(Lecturer lec)
         {
@@ -141,6 +194,31 @@ namespace SomerenWebApp.Repositories
 
                 if (affect == 0) throw new Exception("No record found!");
             }
-        }                   
+        }
+
+        public void UpdateRoomNumber(AddGuestModel add_model)
+        {
+            Lecturer? lec = GetById(add_model.GuestId);
+
+            if (lec == null)
+            {
+                throw new Exception($"Failed to edit room, Lecturer: room with number: {lec.RoomNumber} was not found!");
+            }
+
+            using (SqlConnection con = new SqlConnection(_connection_string))
+            {
+                string query = "UPDATE Lecturers SET room_number = @RoomNumber WHERE id = @LecturerId";
+
+                SqlCommand com = new SqlCommand(query, con);
+
+                com.Parameters.AddWithValue("@LecturerId", lec.LecturerId);
+                com.Parameters.AddWithValue("@RoomNumber", add_model.RoomNumber);
+
+                com.Connection.Open();
+                int affect = com.ExecuteNonQuery();
+
+                if (affect == 0) throw new Exception("No record found!");
+            }
+        }
     }
 }
