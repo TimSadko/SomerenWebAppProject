@@ -1,8 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 using SomerenWebApp.Models;
-using Microsoft.Extensions.Configuration;
-using System.Data.SqlClient;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using SomerenWebApp.Controllers;
 
 namespace SomerenWebApp.Repositories
@@ -24,12 +21,14 @@ namespace SomerenWebApp.Repositories
             {
                 string query = "SELECT room_number, building, single_room FROM Rooms ORDER BY room_number";
                 SqlCommand cmd = new SqlCommand(query, conn);
+
                 conn.Open();
+
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        Room room = MapRoom(reader);
+                        Room room = ReadRoom(reader);
                         rooms.Add(room);
                     }
                 }
@@ -45,14 +44,16 @@ namespace SomerenWebApp.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connectionString))
 			{
-				string query = "SELECT room_number, building, single_room FROM Rooms WHERE room_number NOT IN (SELECT room_number FROM Lecturers) AND room_number NOT IN (SELECT room_number FROM Students GROUP BY room_number HAVING COUNT(*) > 7) ORDER BY room_number";
+				string query = "SELECT room_number, building, single_room FROM Rooms WHERE single_room = 0 AND room_number NOT IN (SELECT room_number FROM Students WHERE room_number IS NOT NULL GROUP BY room_number HAVING COUNT(*) > 7) ORDER BY room_number";
 				SqlCommand cmd = new SqlCommand(query, conn);
+
 				conn.Open();
+
 				using (SqlDataReader reader = cmd.ExecuteReader())
 				{
 					while (reader.Read())
 					{
-						Room room = MapRoom(reader);
+						Room room = ReadRoom(reader);
 						rooms.Add(room);
 					}
 				}
@@ -68,14 +69,16 @@ namespace SomerenWebApp.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connectionString))
 			{
-				string query = "SELECT room_number, building, single_room FROM Rooms WHERE room_number NOT IN (SELECT room_number FROM Lecturers) AND room_number NOT IN (SELECT room_number FROM Students) ORDER BY room_number";
+				string query = "SELECT room_number, building, single_room FROM Rooms WHERE single_room = 1 AND room_number NOT IN (SELECT room_number FROM Lecturers WHERE room_number IS NOT NULL)";
 				SqlCommand cmd = new SqlCommand(query, conn);
+
 				conn.Open();
+
 				using (SqlDataReader reader = cmd.ExecuteReader())
 				{
 					while (reader.Read())
 					{
-						Room room = MapRoom(reader);
+						Room room = ReadRoom(reader);
 						rooms.Add(room);
 					}
 				}
@@ -85,17 +88,20 @@ namespace SomerenWebApp.Repositories
 			return rooms;
 		}
 
-		private Room MapRoom(SqlDataReader reader)
+		private Room ReadRoom(SqlDataReader reader)
         {
-            int room_number = (int)reader["room_number"];
-            string building = (string)reader["building"];
-            bool single_room = (bool)reader["single_room"];
-
-            return new Room(room_number, building, single_room);
+            return new Room()
+            {
+                RoomNumber = (int)reader["room_number"],
+                Building = (string)reader["building"],
+                SingleRoom = (bool)reader["single_room"]
+			};
         }
 
         public void Add(Room room)
         {
+            if (room.RoomNumber == 0) throw new Exception("failed to add Room: 0 is not allowed as RoomNumber");
+
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 string query = "INSERT INTO Rooms (room_number, building, single_room) VALUES (@room_number, @building, @single_room)";
@@ -125,7 +131,7 @@ namespace SomerenWebApp.Repositories
                 {
                     if (reader.Read())
                     {
-                        return MapRoom(reader);
+                        return ReadRoom(reader);
                     }
                 }
 

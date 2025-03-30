@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SomerenWebApp.Models;
 using SomerenWebApp.Repositories;
+using System.Reflection;
 
 namespace SomerenWebApp.Controllers
 {
@@ -98,6 +99,7 @@ namespace SomerenWebApp.Controllers
         }
 
         [HttpGet]
+        [Route("/Rooms/AddGuest/{room_number}")]
         public IActionResult AddGuest(int room_number)
         {
             Room r = _roomsRepository.GetByNum(room_number);
@@ -111,12 +113,53 @@ namespace SomerenWebApp.Controllers
             try
             {
                 _roomsRepository.AddGuest(add_model);
-                return RedirectToAction("Index");
+                return RedirectToAction("Edit", new { id = add_model.RoomNumber });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
                 return View(add_model);
+            }
+        }
+
+        [HttpGet]
+        [Route("/Rooms/RemoveGuest/{room_number}/{guest_id}/{single_room}")]
+        public IActionResult RemoveGuest(int room_number, int guest_id, bool single_room)
+        {
+            try
+            {
+                if (single_room)
+                {
+                    CommonController._lecturer_rep.UpdateRoomNumber(new AddGuestModel(0, single_room, guest_id));
+                }
+                else
+                {
+                    CommonController._student_rep.UpdateRoomNumber(new AddGuestModel(0, single_room, guest_id));
+                }
+                
+                return RedirectToAction("Edit", new { id = room_number });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"!!! {ex.Message}");
+                return RedirectToAction("Edit", new { id = room_number });
+            }
+        }
+
+        [HttpGet]
+        [Route("/Rooms/ClearRoom/{room_number}")]
+        public IActionResult ClearRoom(int room_number)
+        {
+            try
+            {
+                CommonController._student_rep.ClearStudentsRoom(room_number);
+
+                return RedirectToAction("Edit", new { id = room_number });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"!!! {ex.Message}");
+                return RedirectToAction("Edit", new { id = room_number });
             }
         }
     }

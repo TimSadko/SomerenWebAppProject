@@ -8,7 +8,7 @@
         private string _phone_num;
         private string _class;
         private int _voucher_count;
-        private int _room_num;
+        private int? _room_num;
 
         public Student() 
         { 
@@ -38,13 +38,14 @@
         public string PhoneNum { get => _phone_num; set => _phone_num = value; }
         public string Class { get => _class; set => _class = value; }
         public int VoucherCount { get => _voucher_count; set => _voucher_count = value; }
-        public int RoomNum { get => _room_num; set => _room_num = value; }
+        public int? RoomNum { get => _room_num; set => _room_num = value; }
 
         public string FullName { get => $"{_first_name} {_last_name}"; }
+        public string TextRoomNum { get => _room_num == null ? "*None*" : _room_num.ToString(); }
 
-		public override string? ToString()
+        public override string? ToString()
 		{
-            return $"_student_num: {_student_num}; _first_name: {_first_name}; _last_name: {_last_name}; _phone_num: {_phone_num}; _class: {_class}; _voucher_count: {_voucher_count}; _room_num: {_room_num}";
+            return $"_student_num: {_student_num}; _first_name: {_first_name}; _last_name: {_last_name}; _phone_num: {_phone_num}; _class: {_class}; _voucher_count: {_voucher_count}; _room_num: {TextRoomNum}";
 		}
 	}
 }

@@ -30,7 +30,7 @@
 	<div class="form-group py-2">
 		<label for="RoomNumber">Room:</label>
 		<select id="RoomNumber" name="RoomNumber" asp-for="RoomNumber" required>
-			<option value="" disabled selected>Please select one</option>
+			<option value="0" selected>*None*</option>
 			@{
 				foreach (Room r in SomerenWebApp.Controllers.CommonController._room_rep.GetAllAvalibleForLecturers())
 				{

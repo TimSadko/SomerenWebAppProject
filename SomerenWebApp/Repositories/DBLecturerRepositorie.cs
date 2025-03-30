@@ -38,31 +38,6 @@ namespace SomerenWebApp.Repositories
             return lecturers;
         }
 
-        public List<Lecturer> GetAllWithoutRoom()
-        {
-            List<Lecturer> lecturers = new List<Lecturer>();
-
-            using (SqlConnection conn = new SqlConnection(_connection_string))
-            {
-                string query = "SELECT id, first_name, last_name, telephone_num, age, room_number From Lecturers ORDER BY last_name";
-                SqlCommand com = new SqlCommand(query, conn);
-
-                com.Connection.Open();
-                SqlDataReader reader = com.ExecuteReader();
-
-                Lecturer lec;
-
-                while (reader.Read())
-                {
-                    lec = ReadLecturer(reader);
-                    lecturers.Add(lec);
-                }
-                reader.Close();
-            }
-
-            return lecturers;
-        }
-
         private Lecturer ReadLecturer(SqlDataReader reader)
         {
             return new Lecturer()
@@ -72,7 +47,7 @@ namespace SomerenWebApp.Repositories
                 LastName = (string)reader["last_name"],
                 PhoneNumber = (string)reader["telephone_num"],
                 Age = (int)reader["age"],
-                RoomNumber = (int)reader["room_number"]
+                RoomNumber = reader["room_number"] == DBNull.Value ? null : (int)reader["room_number"]
             };
         }
 
@@ -135,7 +110,8 @@ namespace SomerenWebApp.Repositories
 
         public void Add(Lecturer lec)
         {
-            if (CommonController._room_rep.GetByNum(lec.RoomNumber) == null) throw new Exception($"Failed to add Lecturer: room with number: {lec.RoomNumber} was not found!");
+			if (lec.RoomNumber == 0) lec.RoomNumber = null;
+			else if (CommonController._room_rep.GetByNum((int)lec.RoomNumber) == null) throw new Exception($"Failed to add Lecturer: room with number: {lec.RoomNumber} was not found!");
 
 			using (SqlConnection con = new SqlConnection(_connection_string))
             {
@@ -147,7 +123,7 @@ namespace SomerenWebApp.Repositories
                 com.Parameters.AddWithValue("@LastName", lec.LastName);
                 com.Parameters.AddWithValue("@PhoneNumber", lec.PhoneNumber);
                 com.Parameters.AddWithValue("@Age", lec.Age);
-                com.Parameters.AddWithValue("@RoomNumber", lec.RoomNumber);
+                com.Parameters.AddWithValue("@RoomNumber", (object)lec.RoomNumber ?? DBNull.Value);
 
                 com.Connection.Open();
 
@@ -157,7 +133,8 @@ namespace SomerenWebApp.Repositories
 
 		public void Edit(Lecturer lec)
 		{
-			if (CommonController._room_rep.GetByNum(lec.RoomNumber) == null) throw new Exception($"Failed to edit Student: room with number: {lec.RoomNumber} was not found!");
+			if (lec.RoomNumber == 0) lec.RoomNumber = null;
+			else if (CommonController._room_rep.GetByNum((int)lec.RoomNumber) == null) throw new Exception($"Failed to edit Student: room with number: {lec.RoomNumber} was not found!");
 
 			using (SqlConnection con = new SqlConnection(_connection_string))
 			{
@@ -170,7 +147,7 @@ namespace SomerenWebApp.Repositories
 				com.Parameters.AddWithValue("@LastName", lec.LastName);
 				com.Parameters.AddWithValue("@PhoneNumber", lec.PhoneNumber);
 				com.Parameters.AddWithValue("@Age", lec.Age);
-				com.Parameters.AddWithValue("@RoomNumber", lec.RoomNumber);
+				com.Parameters.AddWithValue("@RoomNumber", (object)lec.RoomNumber ?? DBNull.Value);
 
 				com.Connection.Open();
 				int affect = com.ExecuteNonQuery();
@@ -212,7 +189,7 @@ namespace SomerenWebApp.Repositories
                 SqlCommand com = new SqlCommand(query, con);
 
                 com.Parameters.AddWithValue("@LecturerId", lec.LecturerId);
-                com.Parameters.AddWithValue("@RoomNumber", add_model.RoomNumber);
+                com.Parameters.AddWithValue("@RoomNumber", add_model.RoomNumber == 0 ? DBNull.Value : add_model.RoomNumber);
 
                 com.Connection.Open();
                 int affect = com.ExecuteNonQuery();

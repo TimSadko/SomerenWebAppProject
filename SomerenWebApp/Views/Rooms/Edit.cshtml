@@ -77,6 +77,12 @@
 <br />
 
 <h4>Guests:</h4>
+@{
+    if(!Model.SingleRoom && students != null) // If students
+    {
+        <a href="/Rooms/ClearRoom/@Model.RoomNumber">Clear Room</a>
+    }
+}
 <div class="form-group py-2">
     <table>
         <thead>
@@ -96,7 +102,7 @@
                             <td>
                                 <div class="StudentEditRoomText">@lec.FullName (Lecturer)</div>
                             </td>
-                            <td><a href="/Rooms/RemoveGuest/@Model.RoomNumber/@lec.LecturerId">Remove</a></td>
+                            <td><a href="/Rooms/RemoveGuest/@Model.RoomNumber/@lec.LecturerId/@Model.SingleRoom">Remove</a></td>
                         </tr>
                     }
                     else // Empty room
@@ -120,7 +126,7 @@
                                     <div class="StudentEditRoomText">@students[i].FullName (@students[i].StudentNum)</div>
                                 </td>
                                 <td>
-                                    <a href="/Rooms/RemoveGuest/@Model.RoomNumber/@students[i].StudentNum">Remove</a>
+                                    <a href="/Rooms/RemoveGuest/@Model.RoomNumber/@students[i].StudentNum/@Model.SingleRoom">Remove</a>
                                 </td>
                             </tr>
                         }

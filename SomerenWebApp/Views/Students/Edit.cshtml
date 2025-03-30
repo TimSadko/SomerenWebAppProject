@@ -37,8 +37,17 @@
 	<div class="form-group py-2">
 		<label for="RoomNum">Room:</label>
 		<select id="RoomNum" name="RoomNum" asp-for="RoomNum" required>
-			<option value="@Model?.RoomNum" selected>@Model?.RoomNum</option>
 			@{
+				if (Model.RoomNum == null)
+				{
+					<option value="0" selected>*None*</option>
+				}
+				else
+				{
+					<option value="0">*None*</option>
+					<option value="@Model?.RoomNum" selected>@Model?.RoomNum</option>
+				}
+
 				foreach (Room r in SomerenWebApp.Controllers.CommonController._room_rep.GetAllAvalibleForStudents())
 				{
 					if(r.RoomNumber != Model?.RoomNum)
