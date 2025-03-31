@@ -1,29 +1,17 @@
 ﻿@model SomerenWebApp.Models.Drink
 
 @{
-    ViewData["Title"] = "DeleteDrink";
+    ViewData["Title"] = "Delete";
 }
+<h1>Delete</h1>
+<form action="/Drinks/Delete" method="POST">
+    <div class="form-group py-2">
+        <input hidden type="number" name="Id" value="@Model?.Id" />
+    </div>
+    <p>Are you sure you want to delete this drink?</p>
 
-<h2>Delete Drink</h2>
 
-<div>
-    <h4>Are you sure you want to delete this drink?</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Name</dt>
-        <dd class="col-sm-10">@Model.Name</dd>
-
-        <dt class="col-sm-2">Alcoholic</dt>
-        <dd class="col-sm-10">@Model.Alcoholic</dd>
-
-        <dt class="col-sm-2">Price</dt>
-        <dd class="col-sm-10">@Model.Price</dd>
-    </dl>
-
-    <form action="/Drinks/Delete" method="post">
-        <input type="hidden" name="Name" value="@Model.Name" />
-
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+<br />
+<a href="/Rooms/Index" class="btn btn-primary">Back to List</a>

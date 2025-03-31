@@ -6,9 +6,9 @@ namespace SomerenWebApp.Repositories
     public interface IDrinksRepository
     {
         List<Drink> GetAllDrinks();
+        Drink? GetDrinkById(int id);
         void Add(Drink drink);
         void Edit(Drink drink);
-        void Delete(Drink drink);
-        Drink? GetDrinkByName(string name);
+        void Delete(int id);
     }
 }

@@ -41,14 +41,14 @@ namespace SomerenWebApp.Controllers
         }
 
         [HttpGet]
-        [Route("/Drinks/Edit/{name}")]
-        public IActionResult Edit(string name)
+        [Route("/Drinks/Edit/{Id}")]
+        public IActionResult Edit(int id)
         {
-            var drink = _drinksRepository.GetDrinkByName(name);
+            var drink = _drinksRepository.GetDrinkById( id);
 
             if (drink == null)
             {
-                Console.WriteLine($"Error: No drink found with ID: {name}");
+                Console.WriteLine($"Error: No drink found with ID: {id}");
                 return NotFound("Drink not found.");
             }
             return View(drink);
@@ -69,13 +69,17 @@ namespace SomerenWebApp.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("/Drinks/Delete/{name}")]
-        public IActionResult Delete(string name)
-        {
-            //Console.WriteLine($"~~{name}~~");
-            Drink drink = _drinksRepository.GetDrinkByName(name);        
 
+        [HttpGet]
+        [Route("/Drinks/Delete/{id:int}")]
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Drink? drink = _drinksRepository.GetDrinkById((int)id);
             return View(drink);
         }
 
@@ -84,13 +88,15 @@ namespace SomerenWebApp.Controllers
         {
             try
             {
-                _drinksRepository.Delete(drink);
+                _drinksRepository.Delete(drink.Id);
                 return RedirectToAction("Index");
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return View(drink.Name);
+                Console.WriteLine($"!!! {ex.Message}");
+                return View(drink);
+
             }
         }
     }

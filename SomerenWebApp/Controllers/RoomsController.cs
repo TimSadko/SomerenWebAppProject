@@ -41,7 +41,7 @@ namespace SomerenWebApp.Controllers
                 return View(room);
             }
         }
-
+        [HttpGet]
         public IActionResult Edit(int? id)
         {
             if (id == null)
