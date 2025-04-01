@@ -1,0 +1,61 @@
+﻿@model SomerenWebApp.Models.Lecturer
+
+@{
+	ViewData["Title"] = "Edit Lecturer";
+}
+
+<h4>Edit Lecturer</h4>
+
+<form action="/Lecturers/Edit" method="post">
+	<input hidden type="number" name="LecturerId" value="@Model?.LecturerId" />
+
+	<div class="form-group py-2">
+		<label for="FirstName">First Name:</label>
+		<input type="text" id="FirstName" name="FirstName" class="form-control" required value="@Model?.FirstName" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="LastName">Last Name:</label>
+		<input type="text" id="LastName" name="LastName" class="form-control" required value="@Model?.LastName" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="PhoneNumber">Telephone Number:</label>
+		<input type="tel" id="PhoneNumber" name="PhoneNumber" class="form-control" required value="@Model?.PhoneNumber" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="Age">Age:</label>
+		<input type="number" id="Age" name="Age" class="form-control" required value="@Model?.Age" />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="RoomNumber">Room:</label>
+		<select id="RoomNumber" name="RoomNumber" asp-for="RoomNumber" required>		
+			@{
+				if(Model.RoomNumber == null)
+				{
+					<option value="0" selected>*None*</option>
+				}
+				else
+				{
+					<option value="0">*None*</option>
+					<option value="@Model?.RoomNumber" selected>@Model?.RoomNumber</option>
+				}
+
+				foreach (Room r in SomerenWebApp.Controllers.CommonController._room_rep.GetAllAvalibleForLecturers())
+				{
+					if (r.RoomNumber != Model?.RoomNumber)
+					{
+						<option value="@r.RoomNumber">@r.RoomNumber</option>
+					}
+				}
+			}
+		</select>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Edit</button>
+</form>
+
+<a href="/Lecturers/Index">Back to List</a>
+

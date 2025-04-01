@@ -4,11 +4,11 @@ using SomerenWebApp.Repositories;
 
 namespace SomerenWebApp.Controllers
 {
-    public class LecturersController : Controller
+    public class ActivitiesController : Controller
     {
-        private ILecturerRepositorie _rep;
+        private IActivityRepository _rep;
 
-        public LecturersController(ILecturerRepositorie rep)
+        public ActivitiesController(IActivityRepository rep)
         {
             _rep = rep;
         }
@@ -16,9 +16,9 @@ namespace SomerenWebApp.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var lecturers = _rep.GetAll();
+            var Activity = _rep.GetAll();
 
-            return View(lecturers);
+            return View(Activity);
         }
 
         [HttpGet]
@@ -28,18 +28,18 @@ namespace SomerenWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Lecturer lec)
+        public IActionResult Add(Activity act)
         {
             try
             {
-                _rep.Add(lec);
+                _rep.Add(act);
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
-                return View(lec);
+                return View(act);
             }
         }
 
@@ -55,18 +55,18 @@ namespace SomerenWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Lecturer lec)
+        public IActionResult Edit(Activity act)
         {
             try
             {
-                _rep.Edit(lec);
+                _rep.Edit(act);
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
-                return View(lec);
+                return View(act);
             }
         }
 
@@ -82,19 +82,21 @@ namespace SomerenWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(Lecturer lec)
+        public IActionResult Delete(Activity act)
         {
             try
             {
-                _rep.Delete(lec.LecturerId);
+                _rep.Delete(act.ActivityId);
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
-                return View(lec);
+                return View(act);
             }
         }
+
+        
     }
 }

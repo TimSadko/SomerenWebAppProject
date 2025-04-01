@@ -1,0 +1,53 @@
+﻿@model SomerenWebApp.Models.Supervisor
+
+@{
+	ViewData["Title"] = "Edit Supervisor";
+}
+
+<h4>Edit Supervisor</h4>
+
+<form action="/Supervisors/Edit" method="post">
+	<input hidden type="number" name="Id" value="@Model?.Id" />	
+
+	<div class="form-group py-2">
+		<label for="LecturerId">Lecturer:</label>
+		<select id="LecturerId" name="LecturerId" asp-for="LecturerId" required>
+			@{
+				foreach (Lecturer lec in SomerenWebApp.Controllers.CommonController._lecturer_rep.GetAll())
+				{
+					if (lec.LecturerId != Model?.LecturerId)
+					{
+						<option value="@lec.LecturerId">@lec.FullName</option>
+					}
+					else
+					{
+						<option value="@lec.LecturerId" selected>@lec.FullName</option>
+					}
+				}
+			}
+		</select>
+	</div>
+
+	<div class="form-group py-2">
+		<label for="ActivityId">Activity:</label>
+		<select id="ActivityId" name="ActivityId" asp-for="ActivityId" required>
+			@{
+				foreach (Activity act in SomerenWebApp.Controllers.CommonController._activity_rep.GetAll())
+				{
+					if (act.ActivityId != Model?.ActivityId)
+					{
+						<option value="@act.ActivityId">@act.ActivityName (@act.Date)</option>
+					}
+					else
+					{
+						<option value="@act.ActivityId" selected>@act.ActivityName (@act.Date)</option>
+					}
+				}
+			}
+		</select>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Edit</button>
+</form>
+
+<a href="/Supervisors/Index">Back to List</a>

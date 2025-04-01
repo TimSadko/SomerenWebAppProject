@@ -1,0 +1,21 @@
+﻿@model SomerenWebApp.Models.Lecturer
+
+@{
+	ViewData["Title"] = "Delete Lecturer";
+}
+
+<h4>Delete Lecturer</h4>
+
+<form action="/Lecturers/Delete" method="post">
+	<input hidden type="number" name="LecturerId" value="@Model?.LecturerId" />
+
+	<a>Are you sure you want to delete the lecturer:</a>
+
+	<div class="form-group py-2">
+		<a>@Model?.FullName</a>
+	</div>
+
+	<button type="submit" class="btn btn-danger">Delete</button>
+</form>
+
+<a href="/Lectures/Index">Back to List</a>

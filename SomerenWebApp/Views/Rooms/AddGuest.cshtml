@@ -1,0 +1,61 @@
+﻿@model SomerenWebApp.Models.AddGuestModel
+
+@{
+    ViewData["Title"] = "Add Room Guest";
+}
+
+<h1>Add Guest To Room:</h1>
+@{
+    if (Model.SingleRoom)
+    {
+        <form action="/Rooms/AddGuest" method="POST">
+            <input hidden id="SingleRoom" name="SingleRoom" asp-for="SingleRoom" value="@Model.SingleRoom" />
+            <input hidden id="RoomNumber" name="RoomNumber" asp-for="RoomNumber" value="@Model.RoomNumber" />
+
+            <div class="form-group py-2">
+                <label for="GuestId">Lecturers:</label>
+                <div class="WhiteTextHint">Please select lecturer to add. (overrides room if necessary)</div>
+                @{
+                    var lec = SomerenWebApp.Controllers.CommonController._lecturer_rep.GetAll();
+                }
+                <select id="GuestId" name="GuestId" asp-for="GuestId" size="@lec.Count" required>
+                    @{
+                        foreach(Lecturer l in lec) 
+                        {
+                        <option value="@l.LecturerId">@l.FullName (@l.TextRoomNumber)</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Guest</button>
+        </form>
+    }
+    else
+    {
+        <form action="/Rooms/AddGuest" method="POST">
+            <input hidden id="SingleRoom" name="SingleRoom" asp-for="SingleRoom" value="@Model.SingleRoom" />
+            <input hidden id="RoomNumber" name="RoomNumber" asp-for="RoomNumber" value="@Model.RoomNumber" />
+
+            <div class="form-group py-2">
+                <label for="GuestId">Students:</label>           
+                <div class="WhiteTextHint">Please select student to add. (overrides room if necessary)</div>
+                @{
+                    var students = SomerenWebApp.Controllers.CommonController._student_rep.GetStudentsNotStayingInRoom(Model.RoomNumber);
+                }
+                <select id="GuestId" name="GuestId" asp-for="GuestId" size="@students.Count" required>
+                    @{                      
+                        foreach (Student std in students)
+                        {
+                            <option value="@std.StudentNum">@std.FullName (@std.TextRoomNum)</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    }
+}
+<a href="/Rooms/Edit/@Model.RoomNumber">Back to Edit</a>
+

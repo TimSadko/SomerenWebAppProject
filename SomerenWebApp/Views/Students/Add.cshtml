@@ -1,7 +1,7 @@
 ﻿@model SomerenWebApp.Models.Student
 
 @{
-	ViewData["Title"] = "Create Student";
+	ViewData["Title"] = "Add Student";
 }
 
 <h4>Add New Student</h4>
@@ -38,8 +38,16 @@
 	</div>
 
 	<div class="form-group py-2">
-		<label for="RoomNum">Room Number:</label>
-		<input type="number" id="RoomNum" name="RoomNum" class="form-control" required value="@Model?.RoomNum" />
+		<label for="RoomNum">Room:</label>
+		<select id="RoomNum" name="RoomNum" asp-for="RoomNum" required>
+			<option value="0" selected>*None*</option>
+			@{			
+				foreach(Room r in SomerenWebApp.Controllers.CommonController._room_rep.GetAllAvalibleForStudents())
+				{
+					<option value="@r.RoomNumber">@r.RoomNumber</option>
+				}
+			}
+		</select>
 	</div>
 
 	<button type="submit" class="btn btn-primary">Add</button>

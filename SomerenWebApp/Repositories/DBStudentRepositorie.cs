@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Data.SqlClient;
+using SomerenWebApp.Controllers;
 using SomerenWebApp.Models;
 
 namespace SomerenWebApp.Repositories
@@ -8,9 +9,9 @@ namespace SomerenWebApp.Repositories
     {
         private readonly string? _connection_string;
 
-        public DBStudentRepositorie(IConfiguration config)
+        public DBStudentRepositorie(DefaultConfiguration config)
         {
-            _connection_string = config.GetConnectionString("MessengerDatabase");
+            _connection_string = config.GetConnectionString();
         }
 
         public List<Student> GetAll()
@@ -37,10 +38,78 @@ namespace SomerenWebApp.Repositories
 
             return students;
         }
+        public List<Student> GetStudentsNotStayingInRoom(int room_number)
+        {
+            List<Student> students = new List<Student>();
+
+            using (SqlConnection conn = new SqlConnection(_connection_string))
+            {
+                string query = "SELECT student_number, first_name, last_name, telephone_num, class, voucher_count, room_number From Students WHERE NOT room_number = @room_number OR room_number IS NULL ORDER BY last_name";
+
+                SqlCommand com = new SqlCommand(query, conn);
+                com.Parameters.AddWithValue("@room_number", room_number);
+
+                com.Connection.Open();
+                SqlDataReader reader = com.ExecuteReader();
+
+                Student std;
+
+                while (reader.Read())
+                {
+                    std = ReadUser(reader);
+                    students.Add(std);
+                }
+                reader.Close();
+            }
+
+            return students;
+        }
+
+
+        public List<Student>? GetStudentsStayingInRoom(int room_number)
+        {          
+            using (SqlConnection conn = new SqlConnection(_connection_string))
+            {
+                string query = "SELECT student_number, first_name, last_name, telephone_num, class, voucher_count, room_number From Students WHERE room_number = @room_number ORDER BY last_name";
+                SqlCommand com = new SqlCommand(query, conn);
+
+				com.Parameters.AddWithValue("@room_number", room_number);
+
+                com.Connection.Open();
+                SqlDataReader reader = com.ExecuteReader();
+
+				if (!reader.HasRows) 
+				{
+					reader.Close();
+					return null;
+				}
+
+                List<Student> students = new List<Student>();
+                Student std;
+
+                while (reader.Read())
+                {
+                    std = ReadUser(reader);
+                    students.Add(std);
+                }
+                reader.Close();
+
+                return students;
+            }           
+        }
 
         private Student ReadUser(SqlDataReader reader)
         {
-            return new Student((int)reader["student_number"], (string)reader["first_name"], (string)reader["last_name"], (string)reader["telephone_num"], (string)reader["class"], (int)reader["voucher_count"], (int)reader["room_number"]);
+            return new Student()
+            {
+                StudentNum = (int)reader["student_number"],
+                FirstName = (string)reader["first_name"],
+                LastName = (string)reader["last_name"],
+                PhoneNum = (string)reader["telephone_num"],
+                Class = (string)reader["class"],
+                VoucherCount = (int)reader["voucher_count"],
+                RoomNum = reader["room_number"] == DBNull.Value ? null : (int)reader["room_number"]
+			};
         }
 
         public Student? GetByNum(int student_number)
@@ -73,7 +142,8 @@ namespace SomerenWebApp.Repositories
 
         public void Add(Student std)
         {
-			if (GetRoomByNum(std.RoomNum) == null) {
+            if(std.RoomNum == 0) std.RoomNum = null;
+			else if (CommonController._room_rep.GetByNum((int)std.RoomNum) == null) {
 				throw new Exception($"Failed to add Student: room with number: {std.RoomNum} was not found!");
 			}
 			//Console.WriteLine(std);
@@ -92,7 +162,7 @@ namespace SomerenWebApp.Repositories
 					com.Parameters.AddWithValue("@TelephoneNum", std.PhoneNum);
 					com.Parameters.AddWithValue("@Class", std.Class);
 					com.Parameters.AddWithValue("@VoucherCount", std.VoucherCount);
-					com.Parameters.AddWithValue("@RoomNumber", std.RoomNum);
+					com.Parameters.AddWithValue("@RoomNumber", (object)std.RoomNum ?? DBNull.Value);
 
 					com.Connection.Open();
 					com.ExecuteNonQuery();
@@ -103,7 +173,8 @@ namespace SomerenWebApp.Repositories
 
         public void Edit(Student std)
         {
-			if (GetRoomByNum(std.RoomNum) == null)
+			if (std.RoomNum == 0) std.RoomNum = null;
+			else if (CommonController._room_rep.GetByNum((int)std.RoomNum) == null)
 			{
 				throw new Exception($"Failed to edit Student: room with number: {std.RoomNum} was not found!");
 			}
@@ -120,7 +191,7 @@ namespace SomerenWebApp.Repositories
 				com.Parameters.AddWithValue("@telephone_num", std.PhoneNum);
 				com.Parameters.AddWithValue("@class", std.Class);
 				com.Parameters.AddWithValue("@voucher_count", std.VoucherCount);
-				com.Parameters.AddWithValue("@room_number", std.RoomNum);
+				com.Parameters.AddWithValue("@room_number", (object)std.RoomNum ?? DBNull.Value);
 
 				com.Connection.Open();
 				int affect = com.ExecuteNonQuery();
@@ -146,37 +217,45 @@ namespace SomerenWebApp.Repositories
 			}
 		}
 
-		private Room? GetRoomByNum(int room_number)
-		{
-			Room ReadRoom(SqlDataReader reader)
-			{
-				return new Room((int)reader["room_number"], (string)reader["building"]);
-			}
+        public void UpdateRoomNumber(AddGuestModel add_model)
+        {
+            Student? std = GetByNum(add_model.GuestId);
 
-			using (SqlConnection con = new SqlConnection(_connection_string))
-			{
-				string query = "SELECT room_number, building From Rooms WHERE room_number = @room_number";
+            if (std == null)
+            {
+                throw new Exception($"Failed to edit room, Student: room with number: {std.RoomNum} was not found!");
+            }
 
-				SqlCommand com = new SqlCommand(query, con);
-				com.Parameters.AddWithValue("@room_number", room_number);
+            using (SqlConnection con = new SqlConnection(_connection_string))
+            {
+                string query = "UPDATE Students SET room_number=@room_number WHERE student_number = @student_number";
 
-				com.Connection.Open();
-				SqlDataReader reader = com.ExecuteReader();
+                SqlCommand com = new SqlCommand(query, con);
 
-				if (!reader.HasRows)
-				{
-					reader.Close(); return null;
-				}
-				else
-				{
-					reader.Read();
-					Room r = ReadRoom(reader);
+                com.Parameters.AddWithValue("@student_number", std.StudentNum);
+                com.Parameters.AddWithValue("@room_number", add_model.RoomNumber == 0 ? DBNull.Value : add_model.RoomNumber);
 
-					reader.Close();
+                com.Connection.Open();
+                int affect = com.ExecuteNonQuery();
 
-					return r;
-				}
-			}
-		}
-	}
+                if (affect == 0) throw new Exception("No record found!");
+            }
+        }
+
+        public void ClearStudentsRoom(int room_number)
+        {
+            using (SqlConnection con = new SqlConnection(_connection_string))
+            {
+                string query = "UPDATE Students SET room_number=NULL WHERE room_number = @room_number";
+
+                SqlCommand com = new SqlCommand(query, con);
+
+                com.Parameters.AddWithValue("@room_number", room_number);
+
+                com.Connection.Open();
+
+                com.ExecuteNonQuery();
+            }
+        }
+    }
 }

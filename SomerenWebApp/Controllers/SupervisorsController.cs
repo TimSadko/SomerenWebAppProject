@@ -4,11 +4,11 @@ using SomerenWebApp.Repositories;
 
 namespace SomerenWebApp.Controllers
 {
-    public class LecturersController : Controller
+    public class SupervisorsController : Controller
     {
-        private ILecturerRepositorie _rep;
+        private ISupervisorReposiory _rep;
 
-        public LecturersController(ILecturerRepositorie rep)
+        public SupervisorsController(ISupervisorReposiory rep)
         {
             _rep = rep;
         }
@@ -16,9 +16,9 @@ namespace SomerenWebApp.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var lecturers = _rep.GetAll();
+            var super = _rep.GetAll();
 
-            return View(lecturers);
+            return View(super);
         }
 
         [HttpGet]
@@ -28,18 +28,18 @@ namespace SomerenWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Lecturer lec)
+        public IActionResult Add(Supervisor spv)
         {
             try
             {
-                _rep.Add(lec);
+                _rep.Add(spv);
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
-                return View(lec);
+                return View(spv);
             }
         }
 
@@ -55,45 +55,45 @@ namespace SomerenWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Lecturer lec)
+        public IActionResult Edit(Supervisor spv)
         {
             try
             {
-                _rep.Edit(lec);
+                _rep.Edit(spv);
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
-                return View(lec);
+                return View(spv);
             }
         }
 
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+			if (id == null)
+			{
+				return NotFound();
+			}
 
-            return View(_rep.GetById((int)id));
-        }
+			return View(_rep.GetById((int)id));
+		}
 
         [HttpPost]
-        public IActionResult Delete(Lecturer lec)
+        public IActionResult Delete(Supervisor spv)
         {
             try
             {
-                _rep.Delete(lec.LecturerId);
+                _rep.Delete(spv.Id);
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
-                return View(lec);
+                return View(spv);
             }
         }
     }

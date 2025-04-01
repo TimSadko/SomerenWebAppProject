@@ -1,34 +1,28 @@
-﻿@{
+﻿@using System.Text
+@{
     ViewData["Title"] = "Rooms";
 }
 
 @model List<SomerenWebApp.Models.Room>
 
+<link rel="stylesheet" href="~/SomerenWebApp.styles.css" asp-append-version="true" />
+
 <div class="controller_body">
     <div class="text-center">
         <h1 class="display-4">Rooms</h1>
-        <p>Number of rooms: @Model.Count</p>
+        <a href="/Rooms/Add">Create New Room</a>
+        <!--<p>Number of rooms: @Model.Count</p>-->
     </div>
 
     <div class="search-add-table-center">
-
-        <form action="/Rooms/Index" method="get">
-            <div style="display:flex">
-                <input class="input-styling" type="search" name="RoomNumber" placeholder="Filter room by number (e.g., 101, 2 beds)" />
-                <button type="submit" class="my-btn btn-primary btn-border-none">Search</button>
-            </div>
-        </form>
-
-        <br />
-        <a href="/Rooms/Add" class="btn btn-primary">Add Room</a>
-        <br />
-
         <table class="table_pretty2">
             <thead>
                 <tr class="main_tr">
                     <th>Room Number</th>
                     <th>Building</th>
-                    <th>Actions</th> <!-- Added column header for actions -->
+                    <th>Single Room</th>
+                    <th>Guests</th>
+                    <th></th>
                 </tr>
             </thead>
 
@@ -38,6 +32,40 @@
                     <tr>
                         <td>@room.RoomNumber</td>
                         <td>@room.Building</td>
+                        <td>@room.SingleRoomText</td>
+                        <td>
+                            @{
+                                if (room.SingleRoom)
+                                {
+                                    var lec = SomerenWebApp.Controllers.CommonController._lecturer_rep.GetLecturerStayingInRoom(room.RoomNumber);
+
+                                    if (lec != null)
+                                    {
+                                        <a>@lec.FullName (Lecturer)</a>
+                                    }
+                                    else
+                                    {
+                                        <a> *Empty*</a>
+                                    }
+                                }
+                                else
+                                {
+                                    var students = SomerenWebApp.Controllers.CommonController._student_rep.GetStudentsStayingInRoom(room.RoomNumber);
+
+                                    if (students != null)
+                                    {
+                                        for (int i = 0; i < students.Count; i++)
+                                        {
+                                            <div class="StudentRoomText">@students[i].FullName (@students[i].StudentNum)</div>
+                                        }
+                                    }
+                                    else
+                                    {                                       
+                                        <a> *Empty*</a>
+                                    }
+                                }
+                            }
+                        </td>
                         <td>
                             <a href="/Rooms/Edit/@room.RoomNumber">Edit</a> |
                             <a href="/Rooms/Delete/@room.RoomNumber" onclick="return confirm('Are you sure you want to delete this room?');">Delete</a>

@@ -6,7 +6,7 @@
 
 <div class="text-center">
     <h1 class="display-4">Lecturers:</h1>
-    <a href="/Lecturers/Create">Create New Lecturer</a>
+    <a href="/Lecturers/Add">Add New Lecturer</a>
     <table>
         <thead>
             <tr>
@@ -15,6 +15,7 @@
                 <th>Last Name</th>
                 <th>Telephone Number</th>
                 <th>Age</th>
+                <th>Room Number</th>
             </tr>
         </thead>
         <tbody>
@@ -27,10 +28,11 @@
                         <td>@lecturer.LastName</td>
                         <td>@lecturer.PhoneNumber</td>
                         <td>@lecturer.Age</td>
-                        <!--<td>
-                            <a href="/Student/Edit/std.StudentNum">Edit</a>
-                            <a class="VerticalBreak" href="/Student/Delete/std.StudentNum">Delete</a>
-                        </td>-->
+                        <td>@lecturer.TextRoomNumber</td>
+                        <td>
+                            <a href="/Lecturers/Edit/@lecturer.LecturerId">Edit</a> |
+                            <a href="/Lecturers/Delete/@lecturer.LecturerId">Delete</a>
+                        </td>
                     </tr>
                 }
             }

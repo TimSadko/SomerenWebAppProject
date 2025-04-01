@@ -1,0 +1,26 @@
+﻿@model SomerenWebApp.Models.Supervisor
+
+@{
+	ViewData["Title"] = "Delete Supervisor";
+
+	var lec = SomerenWebApp.Controllers.CommonController._lecturer_rep.GetById(Model.LecturerId);
+	var act = SomerenWebApp.Controllers.CommonController._activity_rep.GetById(Model.ActivityId);
+}
+
+<h4>Delete Supervisor</h4>
+
+<form action="/Supervisors/Delete" method="post">
+	<input hidden type="number" name="Id" value="@Model?.Id" />
+
+	<a>Are you sure you want to delete Supervisor:</a>
+
+	<div class="form-group py-2">
+		<h6>Id: @Model?.Id</h6>
+		<h6>Lecturer: @lec.FullName</h6>
+		<h6>Activity: @act.ActivityName (@act.Date)</h6>
+	</div>
+
+	<button type="submit" class="btn btn-danger">Delete</button>
+</form>
+
+<a href="/Supervisors/Index">Back to List</a>
