@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Drinks";
+}
+
+@model List<SomerenWebApp.Models.Drink>
+
+<div class="controller_body">
+    <div class="text-center">
+        <h1 class="display-4">Drinks</h1>
+        <p>Number of drinks: @Model.Count</p>
+        <a href="/Drinks/Add">Add Drink</a>
+        <br />
+
+        <table class="table_pretty2">
+            <thead>
+                <tr class="main_tr">
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Alcoholic</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (Drink drink in Model)
+                {
+                    <tr>
+                        <td>@drink.Id</td>
+                        <td>@drink.Name</td>
+                        <td>@(drink.Alcoholic ? "Yes" : "No")</td>
+                        <td>€ @drink.Price.ToString("0.00")</td>
+                        <td>
+                            <a href="/Drinks/Edit/@drink.Id">Edit</a> |
+                            <a href="/Drinks/Delete/@drink.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+

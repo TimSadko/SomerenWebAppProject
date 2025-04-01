@@ -1,5 +1,6 @@
 using SomerenWebApp.Controllers;
 using SomerenWebApp.Repositories;
+using SomerenWebApp.Repositories;
 
 namespace SomerenWebApp
 {
