@@ -1,24 +1,38 @@
 ﻿@model SomerenWebApp.Models.Drink
 
 @{
-	ViewData["Title"] = "Edit";
+	ViewData["Title"] = "Edit Drink";
 }
 
-<div class="controller_body">
-	<form action="/Drinks/Edit" method="POST">
-		<input type="hidden" name="Id" value="@Model?.Id" />
-		<article class="input_group">
-			<label for="Name">Name</label>
-			<input type="text" class="input_field" name="Name" required value="@Model?.Name" />
-		</article>
-		<article class=" input_group">
-			<label for="Alcoholic">Alcoholic</label>
-			<input type="bool" class="input_field" name="Alcoholic" required value="@Model?.Alcoholic" />
-		</article>
-		<article class="input_group">
-			<label for="Price">Price</label>
-			<input type="number" class="input_field" name="Price" required value="@Model?.Price" />
-		</article>
-		<button type="submit" class="add_entity_main">Edit Drink</button>
-	</form>
-</div>
+<h1>Edit Drink:</h1>
+<form action="/Drinks/Edit" method="POST">
+	<input hidden type="number" name="Id" value="@Model.Id" />
+
+	<div class="form-group py-2">
+		<label for="Name">Name</label>
+		<input type="text" name="Name" asp-for="Name" value="@Model.Name" required />
+	</div>
+
+	<div class="form-group py-2">
+		<label for="Alcoholic">Alcoholic</label>
+		@{
+			if (Model.Alcoholic)
+			{
+				<input type="checkbox" asp-for="Alcoholic" checked/>
+			}
+			else
+			{
+				<input type="checkbox" asp-for="Alcoholic" />
+			}
+		}		
+	</div>
+
+	<div class="form-group py-2">
+		<label for="Price">Price</label>
+		<input type="number" step="0.01" name="Price" asp-for="Price" value="@Model.Price.ToString("0.00").Replace(",", ".")" required />
+	</div>
+
+	<button type="submit" class="btn btn-primary">Edit Drink</button>
+</form>
+<br />
+<a href="/Drinks/Index" class="btn btn-primary">Back to List</a>

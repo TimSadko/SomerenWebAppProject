@@ -35,22 +35,23 @@ namespace SomerenWebApp.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return View(drink);
+				Console.WriteLine($"!!! {ex.Message}");
+				return View(drink);
             }
         }
 
         [HttpGet]
-        [Route("/Drinks/Edit/{Id}")]
         public IActionResult Edit(int id)
         {
-            var drink = _drinksRepository.GetDrinkById( id);
+            Console.WriteLine($"{id} drinks");
 
-            if (drink == null)
-            {
-                Console.WriteLine($"Error: No drink found with ID: {id}");
-                return NotFound("Drink not found.");
-            }
+            var drink = _drinksRepository.GetDrinkById(id);
+
+            Console.WriteLine($" name: {drink.Name}");
+            Console.WriteLine($" alc: {drink.Alcoholic}");
+            Console.WriteLine($" price: {drink.Price}");
+
+
             return View(drink);
         }
 
@@ -64,22 +65,16 @@ namespace SomerenWebApp.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return View(drink);
+				Console.WriteLine($"!!! {ex.Message}");
+				return View(drink);
             }
         }
 
 
         [HttpGet]
-        [Route("/Drinks/Delete/{id:int}")]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Drink? drink = _drinksRepository.GetDrinkById((int)id);
+            Drink? drink = _drinksRepository.GetDrinkById(id);
             return View(drink);
         }
 
@@ -90,13 +85,11 @@ namespace SomerenWebApp.Controllers
             {
                 _drinksRepository.Delete(drink.Id);
                 return RedirectToAction("Index");
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"!!! {ex.Message}");
                 return View(drink);
-
             }
         }
     }

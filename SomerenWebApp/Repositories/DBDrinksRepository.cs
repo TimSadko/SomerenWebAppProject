@@ -14,67 +14,37 @@ namespace SomerenWebApp.Repositories
             _connectionString = configuration.GetConnectionString("MessengerDatabase");
         }
 
-        public void Add(Drink drink)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                string query = "INSERT INTO Drinks (id, name, alcoholic, price) VALUES (@Id,@Name, @Alcoholic, @Price)";
-                connection.Open();
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", drink.Id);
-                    command.Parameters.AddWithValue("@Name", drink.Name);
-                    command.Parameters.AddWithValue("@Alcoholic", drink.Alcoholic);
-                    command.Parameters.AddWithValue("@Price", drink.Price);
-                    command.ExecuteNonQuery();
-                }
-            }           
-        }
-
-
-
-        void IDrinksRepository.Delete(int id)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                string query = "DELETE FROM Drinks WHERE id = @Id";
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Id", id);
-                connection.Open();
-                int affect = command.ExecuteNonQuery();
-                if (affect == 0) throw new Exception("No record found!");
-            }
-            throw new NotImplementedException();
-        }
-
         public List<Drink> GetAllDrinks()
         {
             List<Drink> drinks = new List<Drink>();
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT id ,name, alcoholic, price FROM Drinks";
+                string query = "SELECT id, name, alcoholic, price FROM Drinks";
+                SqlCommand command = new SqlCommand(query, connection);
+
                 connection.Open();
-                using (SqlCommand command = new SqlCommand(query, connection))
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Drink drink = new Drink
-                            {
-                                Id = reader.GetInt32(0),
-                                Name = reader.GetString(1),
-                                Alcoholic = reader.GetBoolean(2),
-                                Price = reader.GetDecimal(3) 
-                            };
-                            drinks.Add(drink);
-                        }
-                        reader.Close();
-                    }
+                    drinks.Add(ReadDrink(reader));
                 }
+                reader.Close();
             }
             return drinks;
+        }
+
+        private Drink ReadDrink(SqlDataReader reader)
+        {
+            return new Drink()
+            {
+                Id = (int)reader["id"],
+                Name = (string)reader["name"],
+                Alcoholic = (bool)reader["alcoholic"],
+                Price = (decimal)reader["price"]
+            };
         }
 
 
@@ -82,31 +52,58 @@ namespace SomerenWebApp.Repositories
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT id, name,alcoholic,price FROM Drinks WHERE id = @Id";
+                string query = "SELECT id, name, alcoholic, price FROM Drinks WHERE id = @Id";
+
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@Id", id);
 
                 connection.Open();
-                using (SqlDataReader reader = command.ExecuteReader())
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (!reader.HasRows)
                 {
-                    if (reader.Read())
-                    {
-                        return new Drink
-                        {
-                            Id = reader.GetInt32(0), // Assuming 'id' is the first column
-                            Name = reader.GetString(1) // Assuming 'name' is the second column
-                        };
-                    }
+                    reader.Close(); return null;
+                }
+                else
+                {
+                    reader.Read();
+                    Drink s = ReadDrink(reader);
+
+                    reader.Close();
+
+                    return s;
                 }
             }
-            return null; // Return null if no drink is found
         }
+
+        public void Add(Drink drink)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "INSERT INTO Drinks (name, alcoholic, price) VALUES (@Name, @Alcoholic, @Price); SELECT SCOPE_IDENTITY();";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@Name", drink.Name);
+                command.Parameters.AddWithValue("@Alcoholic", drink.Alcoholic);
+                command.Parameters.AddWithValue("@Price", drink.Price);
+
+                connection.Open();
+
+                drink.Id = Convert.ToInt32(command.ExecuteScalar());
+            }
+        }      
 
         public void Edit(Drink drink)
         {
+            Console.WriteLine($"Alc: {drink.Alcoholic}");
+
+            if (GetDrinkById(drink.Id) == null) throw new Exception($"Drink with id({drink.Id}) was not found; Failed to edit Drink");
+
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = "UPDATE Rooms SET building = @building WHERE room_number = @room_number";
+                string query = "UPDATE Drinks SET name = @name, alcoholic = @alcoholic, price = @price WHERE id = @id";
                 SqlCommand command = new SqlCommand(query, conn);
 
                 command.Parameters.AddWithValue("@id", drink.Id);
@@ -116,6 +113,21 @@ namespace SomerenWebApp.Repositories
 
                 conn.Open();
                 command.ExecuteNonQuery();
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "DELETE FROM Drinks WHERE id = @Id";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@Id", id);
+                connection.Open();
+
+                int affect = command.ExecuteNonQuery();
+                if (affect == 0) throw new Exception("No record found!");
             }
         }
     }
