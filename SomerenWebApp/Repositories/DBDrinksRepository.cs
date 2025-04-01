@@ -20,7 +20,7 @@ namespace SomerenWebApp.Repositories
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT id, name, alcoholic, price FROM Drinks";
+                string query = "SELECT id, name, alcoholic, price FROM Drinks ORDER BY name";
                 SqlCommand command = new SqlCommand(query, connection);
 
                 connection.Open();
