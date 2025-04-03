@@ -1,0 +1,39 @@
+﻿@model List<Participant>
+
+@{
+    ViewData["Title"] = "Participant";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Participants</h1>
+    <a href="/Participants/Add">Add New Patrticipants</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Participant Id</th>
+                <th>Activity Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (Participant parti in Model)
+                {
+                    Console.WriteLine(parti.ActivityId);
+                    var std = SomerenWebApp.Controllers.CommonController._student_rep.GetByNum(parti.StudentId);
+                    var act = SomerenWebApp.Controllers.CommonController._activity_rep.GetById(parti.ActivityId);
+
+                    <tr>
+                        <td>@parti.Id</td>
+                        <td>@std.FullName <strong>[@parti.StudentId]</strong></td>
+                        <td>@act.ActivityName (@act.Date) <strong>[@parti.ActivityId]</strong></td>
+                        <td>
+                            <a href="/Participants/Edit/@parti.Id">Edit</a> |
+                            <a href="/Participants/Delete/@parti.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,39 @@
+﻿@model SomerenWebApp.Models.Participant
+
+@{
+	ViewData["Title"] = "Add Patrticipant";
+}
+
+<h4>Add New Participant</h4>
+
+<form action="/Participants/Add" method="post">
+	<div class="form-group py-2">
+		<label for="StudentId">Student:</label>
+		<select id="StudentId" name="StudentId" asp-for="StudentId" required>
+			<option value="" disabled selected>Please select one</option>
+			@{
+				foreach (Student std in SomerenWebApp.Controllers.CommonController._student_rep.GetAll())
+				{
+					<option value="@std.StudentNum">@std.FullName</option>
+				}
+			}
+		</select>
+	</div>
+
+	<div class="form-group py-2">
+		<label for="ActivityId">Activity:</label>
+		<select id="ActivityId" name="ActivityId" asp-for="ActivityId" required>
+			<option value="" disabled selected>Please select one</option>
+			@{
+				foreach (Activity act in SomerenWebApp.Controllers.CommonController._activity_rep.GetAll())
+				{
+					<option value="@act.ActivityId">@act.ActivityName (@act.Date)</option>
+				}
+			}
+		</select>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+<a href="/Participants/Index">Back to List</a>
