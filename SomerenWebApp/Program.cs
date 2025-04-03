@@ -33,6 +33,10 @@ namespace SomerenWebApp
             builder.Services.AddSingleton<ISupervisorReposiory>(_supervisor_rep);
             CommonController._supervisor_rep = _supervisor_rep;
 
+            var _participants_rep = new DBParticipantRepository(def);
+            builder.Services.AddSingleton<IParticipantsRepository>(_participants_rep);
+            CommonController._participants_rep = _participants_rep;
+
             // Add services to the container.          
             builder.Services.AddControllersWithViews();
 
