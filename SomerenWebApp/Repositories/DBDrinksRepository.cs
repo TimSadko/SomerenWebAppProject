@@ -9,9 +9,9 @@ namespace SomerenWebApp.Repositories
     {
         private readonly string _connectionString;
 
-        public DBDrinksRepository(IConfiguration configuration)
+        public DBDrinksRepository(DefaultConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("MessengerDatabase");
+            _connectionString = configuration.GetConnectionString();
         }
 
         public List<Drink> GetAllDrinks()
