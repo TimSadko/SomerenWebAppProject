@@ -1,0 +1,26 @@
+﻿@model SomerenWebApp.Models.Participant
+
+@{
+	ViewData["Title"] = "Delete Patrticipant";
+
+	var std = SomerenWebApp.Controllers.CommonController._student_rep.GetByNum(Model.StudentId);
+	var act = SomerenWebApp.Controllers.CommonController._activity_rep.GetById(Model.ActivityId);
+}
+
+<h4>Delete Patrticipant</h4>
+
+<form action="/Participants/Delete" method="post">
+	<input hidden type="number" name="Id" value="@Model?.Id" />
+
+	<a>Are you sure you want to delete Patrticipant:</a>
+
+	<div class="form-group py-2">
+		<h6>Id: @Model?.Id</h6>
+		<h6>Lecturer: @std.FullName</h6>
+		<h6>Activity: @act.ActivityName (@act.Date)</h6>
+	</div>
+
+	<button type="submit" class="btn btn-danger">Delete</button>
+</form>
+
+<a href="/Participants/Index">Back to List</a>

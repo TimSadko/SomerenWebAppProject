@@ -1,0 +1,53 @@
+﻿@model SomerenWebApp.Models.Participant
+
+@{
+	ViewData["Title"] = "Edit Participants";
+}
+
+<h4>Edit Participant</h4>
+
+<form action="/Participants/Edit" method="post">
+	<input hidden type="number" name="Id" value="@Model?.Id" />
+
+	<div class="form-group py-2">
+		<label for="StudentId">Student:</label>
+		<select id="StudentId" name="StudentId" asp-for="StudentId" required>
+			@{
+				foreach (Student std in SomerenWebApp.Controllers.CommonController._student_rep.GetAll())
+				{
+					if (std.StudentNum != Model?.StudentId)
+					{
+						<option value="@std.StudentNum">@std.FullName</option>
+					}
+					else
+					{
+						<option value="@std.StudentNum" selected>@std.FullName</option>
+					}
+				}
+			}
+		</select>
+	</div>
+
+	<div class="form-group py-2">
+		<label for="ActivityId">Activity:</label>
+		<select id="ActivityId" name="ActivityId" asp-for="ActivityId" required>
+			@{
+				foreach (Activity act in SomerenWebApp.Controllers.CommonController._activity_rep.GetAll())
+				{
+					if (act.ActivityId != Model?.ActivityId)
+					{
+						<option value="@act.ActivityId">@act.ActivityName (@act.Date)</option>
+					}
+					else
+					{
+						<option value="@act.ActivityId" selected>@act.ActivityName (@act.Date)</option>
+					}
+				}
+			}
+		</select>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Edit</button>
+</form>
+
+<a href="/Participants/Index">Back to List</a>

@@ -9,5 +9,7 @@ namespace SomerenWebApp.Controllers
 		public static ILecturerRepositorie _lecturer_rep;
 		public static IRoomRepository _room_rep;
 		public static ISupervisorReposiory _supervisor_rep;
-	}
+        public static IParticipantsRepository _participants_rep;
+        public static IDrinksRepository _drink_rep;
+    }
 }
