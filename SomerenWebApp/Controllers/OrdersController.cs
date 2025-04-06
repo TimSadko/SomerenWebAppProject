@@ -17,19 +17,14 @@ namespace SomerenWebApp.Controllers
         [HttpGet]
         public IActionResult Confirm()
         {
-            var orders = _orderRepository.GetAllDrinks();
+            var orders = _orderRepository.GetAllOrder();
             return View(orders);
         }
-
 
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Drinks = CommonController._drink_rep.GetAllDrinks();
-            ViewBag.Students = CommonController._student_rep.GetAll(); 
-
-            // Debugging output to check if students are loaded
-            System.Diagnostics.Debug.WriteLine($"Students count: {((List<Student>)ViewBag.Students)?.Count}");
+          
 
             return View();
         }
@@ -37,16 +32,17 @@ namespace SomerenWebApp.Controllers
         [HttpPost]
         public IActionResult Create(Order order)
         {
-            if (ModelState.IsValid)
+            try
             {
                 _orderRepository.Add(order);
-                return RedirectToAction("Index");
+
+                return RedirectToAction("Confirm");
             }
-
-            ViewBag.Drinks = CommonController._drink_rep.GetAllDrinks();
-            ViewBag.Students = CommonController._student_rep.GetAll(); // Correct method call again
-
-            return View(order);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"!!! {ex.Message}");
+                return View(order);
+            }
         }
     }
 }

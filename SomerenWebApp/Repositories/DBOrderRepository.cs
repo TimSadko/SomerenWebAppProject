@@ -13,7 +13,7 @@ namespace SomerenWebApp.Repositories
 			_connectionString = configuration.GetConnectionString();
 		}
 
-		public List<Order> GetAllDrinks()
+		public List<Order> GetAllOrder()
 		{
 			List<Order> order = new List<Order>();
 
@@ -81,11 +81,11 @@ namespace SomerenWebApp.Repositories
 		{
 			using (SqlConnection connection = new SqlConnection(_connectionString))
 			{
-				string query = "INSERT INTO Orders (id, drink_id, student_number, price) VALUES (@Id,@DrinkID, @StudentNumber, @Price);";
+				string query = "INSERT INTO Orders (drink_id, student_number, price) VALUES (@DrinkID, @StudentNumber, @Price); SELECT SCOPE_IDENTITY();";
 
 				SqlCommand command = new SqlCommand(query, connection);
 
-				command.Parameters.AddWithValue("@Id", order.Id);
+				
 				command.Parameters.AddWithValue("@drink_id", order.DrinkID);
                 command.Parameters.AddWithValue("@student_number", order.StudentNumber);
                 command.Parameters.AddWithValue("@Price", order.Price);
@@ -100,5 +100,22 @@ namespace SomerenWebApp.Repositories
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+     
+
+        Drink? IOrderRepository.GetOrderById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Edit(Order order)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
