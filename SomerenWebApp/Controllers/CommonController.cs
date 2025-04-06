@@ -11,5 +11,6 @@ namespace SomerenWebApp.Controllers
 		public static ISupervisorReposiory _supervisor_rep;
         public static IParticipantsRepository _participants_rep;
         public static IDrinksRepository _drink_rep;
+        public static IOrderRepository _order_rep;
     }
 }

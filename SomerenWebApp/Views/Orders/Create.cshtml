@@ -1,0 +1,33 @@
+﻿@model SomerenWebApp.Models.Order
+
+@{
+    ViewData["Title"] = "Create Order";
+}
+
+<div class="controller_body">
+    <h1 class="display-4 text-center">Place a New Order</h1>
+
+    <form asp-action="Create" method="post">
+        <div class="form-group">
+            <label>Student:</label>
+            <select asp-for="StudentNumber" class="form-control">
+                @foreach (var student in ViewBag.Students)
+                {
+                    <option value="@student.StudentNumber">@student.FirstName @student.LastName</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Drink:</label>
+            <select asp-for="DrinkID" class="form-control">
+                @foreach (var drink in ViewBag.Drinks)
+                {
+                    <option value="@drink.Id">@drink.Name (€ @drink.Price.ToString("0.00"))</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success mt-3">Order</button>
+    </form>
+</div>

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using SomerenWebApp.Controllers;
 using SomerenWebApp.Repositories;
 using SomerenWebApp.Repositories;
@@ -41,8 +42,12 @@ namespace SomerenWebApp
             builder.Services.AddSingleton<IDrinksRepository>(_drink_rep);
             CommonController._drink_rep = _drink_rep;
 
-            // Add services to the container.          
-            builder.Services.AddControllersWithViews();
+			var _order_rep = new DBOrderRepository(def);
+			builder.Services.AddSingleton<IOrderRepository>(_order_rep);
+			CommonController._order_rep = _order_rep;
+
+			// Add services to the container.          
+			builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
