@@ -7,7 +7,7 @@
 <div class="controller_body">
     <h1 class="display-4 text-center">Place a New Order</h1>
 
-    <form asp-action="Create" method="post">
+    <form asp-action="Confirm" method="post">
         <div class="form-group">
             <label>Student:</label>
             <select asp-for="StudentNumber" class="form-control">
@@ -28,6 +28,6 @@
             </select>
         </div>
 
-        <button type="submit" class="btn btn-success mt-3">Order</button>
+        <button type="submit" class="btn btn-success mt-3">Next</button>
     </form>
 </div>

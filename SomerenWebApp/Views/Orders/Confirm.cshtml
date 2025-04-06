@@ -1,34 +1,35 @@
-﻿@model SomerenWebApp.Models.Order
+﻿@model List<SomerenWebApp.Models.Order>
 
 @{
     ViewData["Title"] = "Confirm Order";
     string studentName = ViewBag.StudentName;
     string drinkName = ViewBag.DrinkName;
-    decimal price = ViewBag.Price;
+    decimal? price = ViewBag.Price;
 }
 
-<div class="controller_body">
-    <h1 class="display-4 text-center">Confirm Order</h1>
+<div class="controller_body bg-dark p-4 rounded">
+    <h1 class="display-4 text-center text-white">All Orders</h1>
 
-    <dl class="row">
-        <dt class="col-sm-3">Student</dt>
-        <dd class="col-sm-9">@studentName (@Model.StudentNumber)</dd>
+    <table class="table table-dark table-striped mt-4">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Student Number</th>
+            <th>Drink ID</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.StudentNumber</td>
+                <td>@order.DrinkID</td>
+                <td>€@order.Price.ToString("0.00")</td>
+            </tr>
+        }
+    </tbody>
+</table>
 
-        <dt class="col-sm-3">Drink</dt>
-        <dd class="col-sm-9">@drinkName</dd>
-
-        <dt class="col-sm-3">Price</dt>
-        <dd class="col-sm-9">€@price.ToString("0.00")</dd>
-
-        
-
-        
-    </dl>
-
-    <form asp-action="CreateConfirmed" method="post">
-        <input type="hidden" asp-for="StudentNumber" />
-        <input type="hidden" asp-for="DrinkID" />
-        <button type="submit" class="btn btn-success">Confirm</button>
-        <a href="/Order/Create" class="btn btn-secondary">Go Back</a>
-    </form>
 </div>

@@ -42,7 +42,7 @@ namespace SomerenWebApp.Repositories
 				Id = (int)reader["id"],
 				DrinkID = (int)reader["drink_id"],
 				StudentNumber = (int)reader["student_number"],
-				Price = (int)reader["price"],
+				Price = (decimal)reader["price"],
 
 			};
 		}

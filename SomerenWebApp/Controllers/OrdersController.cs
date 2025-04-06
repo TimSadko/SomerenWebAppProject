@@ -17,9 +17,10 @@ namespace SomerenWebApp.Controllers
         [HttpGet]
         public IActionResult Confirm()
         {
-            List<Order> orders = _orderRepository.GetAllDrinks();
+            var orders = _orderRepository.GetAllDrinks();
             return View(orders);
         }
+
 
         [HttpGet]
         public IActionResult Create()
