@@ -15,28 +15,26 @@ namespace SomerenWebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Confirm()
+        public IActionResult Index()
         {
-            var orders = _orderRepository.GetAllOrder();
+            var orders = _orderRepository.GetAllOrders();
             return View(orders);
         }
 
         [HttpGet]
-        public IActionResult Create()
-        {
-          
-
+        public IActionResult Add()
+        {   
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Order order)
+        public IActionResult Add(Order order)
         {
             try
             {
                 _orderRepository.Add(order);
 
-                return RedirectToAction("Confirm");
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
